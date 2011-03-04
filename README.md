@@ -6,6 +6,9 @@ It is an open source tool written in Python and JavaScript for handling RDF-base
 * integrating SPARQL endpoints and RDF documents,
 * synchronising data sources, and
 * querying data sources
+
+## Dependencies
+rdflib 3.5 and rdfextras 0.2 
  
 ## License
 

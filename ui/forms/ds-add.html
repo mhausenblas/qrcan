@@ -1,0 +1,27 @@
+<form id="ds-form" action="">
+	<div class="field">
+		<label>Identifier</label><br />
+		<input id="ds-id" type="text" size="15" />
+		<div class="fnote">Provide an identifier for the data source, for example 'mydatasource'.</div>
+	</div>
+	<div class="field">
+		<fieldset>
+		<legend>Access method</legend>
+			<label>SPARQL Endpoint URI</label><br />
+			<input id="ds-access-sparql" type="text" size="30" /> or <br />
+			<label>RDF document</label><br />
+			<input id="ds-access-dump" type="text" size="30" />
+		<div class="fnote">Provide the way the data source can be accessed, either by specifying a SPARQL Endpoint URI or the location of an RDF document.</div>
+		</fieldset>	
+	</div>
+	<div class="field">
+		<fieldset>
+		<legend>Access mode</legend>
+		<input type="radio" name="ds-mode" value="local"> local
+		<input type="radio" name="ds-mode" value="remote"> remote
+		
+		<div class="fnote">Specify the way the data source should be accessed. If you choose <em>local</em>, the data source will be downloaded to the local store. If you choose <em>remote</em>, the data source will be queried live.</div>
+		</fieldset>
+	</div>
+	<div class="cmdbar"><button id="ds-update">Add ...</button> <button id="cancel">Cancel</button></div>
+</form>

@@ -1,0 +1,10 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix qrcan: <http://vocab.deri.ie/qrcan#> .
+@prefix : <http://localhost:6969/api/datasource/> .
+
+:michaelsfoaffile rdf:type void:Dataset ;
+	dcterms:title "Michael's FOAF file" ;
+	void:dataDump <http://sw-app.org/mic.xhtml> ;
+	qrcan:mode qrcan:remote .
