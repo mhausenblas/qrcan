@@ -1,28 +1,22 @@
 <div class="pane-title">Add data source ...</div>
 <form id="ds-form" action="">
-	<div class="field">
-		<label>Name</label><br />
-		<input id="ds-name" type="text" size="15" /> <span id="ds-id"></span>
-		<div class="fnote">Provide a name for the data source.</div>
-	</div>
-	<div class="field">
-		<fieldset>
+	<fieldset>
+		<legend>Name</legend>
+			<input id="ds-name" type="text" size="15" /> <span id="ds-id"></span>
+			<div class="fnote">Provide a name for the data source.</div>
+	</fieldset>
+	<fieldset>
 		<legend>Access method</legend>
 			<label>SPARQL Endpoint URI</label><br />
 			<input id="ds-access-sparql" type="text" size="30" /> or <br />
 			<label>RDF document</label><br />
 			<input id="ds-access-dump" type="text" size="30" />
-		<div class="fnote">Provide the way the data source can be accessed, either by specifying a SPARQL Endpoint URI or the location of an RDF document. See also the <a href="http://labs.mondeca.com/sparqlEndpointsStatus/" target="_new">list of public SPARQL Endpoints</a> and their status.</div>
-		</fieldset>	
-	</div>
-	<div class="field">
-		<fieldset>
+			<div class="fnote">Provide the way the data source can be accessed, either by specifying a SPARQL Endpoint URI or the location of an RDF document. See also the <a href="http://labs.mondeca.com/sparqlEndpointsStatus/" target="_new">list of public SPARQL Endpoints</a> and their status.</div>
+	</fieldset>	
+	<fieldset>
 		<legend>Access mode</legend>
-		<input type="radio" name="ds-mode" value="local"> local
-		<input type="radio" name="ds-mode" value="remote"> remote
-		
+		<input type="radio" name="ds-mode" value="local"> local <input type="radio" name="ds-mode" value="remote"> remote
 		<div class="fnote">Specify the way the data source should be accessed. If you choose <em>local</em>, the data source will be downloaded to the local store. If you choose <em>remote</em>, the data source will be queried live.</div>
-		</fieldset>
-	</div>
+	</fieldset>
 	<div class="cmdbar"><button id="ds-update">Add ...</button> <button id="cancel">Cancel</button></div>
 </form>

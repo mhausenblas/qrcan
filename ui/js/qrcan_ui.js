@@ -63,7 +63,7 @@ $(function() {
 	});
 	
 	$(".cmdbtn").mouseover(function () {
-		$(this).css("border", "1px solid #9f9f9f");
+		$(this).css("border", "1px solid #c0c0e0");
 	}).mouseout(function(){
 		$(this).css("border", "1px solid #f0f0f0");
 	});
@@ -84,7 +84,7 @@ function listDatasources(){
 		var b = "";
 		for(i in data) {
 			var ds = data[i];
-			b += "<div class='datasource' resource='" + ds["id"] + "'>" + ds["title"] + "</div>";
+			b += "<div class='datasource' resource='" + ds["id"] + "'><img src='img/ds.png' alt='Data source ...' title='Data source ...' /> " + ds["title"] + "</div>";
 		}
 		$("#datasources").html(b);
 	});

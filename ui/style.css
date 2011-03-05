@@ -26,6 +26,12 @@ a.home:hover {
 	text-decoration: underline; 
 }
 
+fieldset {
+	margin: 0.5em 0 1em 0;
+	border: 1px solid #f0f0f0;
+	padding: 2em;
+}
+
 legend {
 	font-size: 12pt;
 	font-weight: bold;
@@ -42,6 +48,12 @@ fieldset label {
 }
 
 
+#qrcanlogo {
+	position: absolute;
+	top: 0px;
+	left: 5px;
+}
+
 #header {
 	padding: 0.2em 0.5em 0.2em 0.2em;
 	background: #f0f0f0;
@@ -56,16 +68,26 @@ fieldset label {
 
 #control {
 	margin: 1em 0 0 0;
-	padding: 0 0.5em 0.5em 0.5em;
+	padding: 0 0.5em 0 0.5em;
 	width: 10.5em;
-	border-right: 1px solid #f0f0f0;
 	float: left;
+	
 }
 
 #control h2 {
 	font-size: 16pt;
 	margin: 0;
+	padding: 0 0 0 0.5em;
+	background: #e3e3ff;
+	border: 1px solid #c0c0e0;
+	-moz-border-radius: 2px 2px 2px 2px;
+	-webkit-border-radius: 2px 2px 2px 2px;
+}
+
+#cmds {
+	border-bottom: 1px solid #efefef;
 	padding: 0;
+	text-align: right;
 }
 
 #workspace {
@@ -79,30 +101,37 @@ fieldset label {
 	font-size: 10pt;
 }
 
+#ds-form {
+	font-size: 10pt;
+	padding: 1em;
+	font-family: Arial, sans-serif;
+}
+
 #ds-id {
 	color: #d0d0d0;
 	padding: 0 0 0 1em;
 	font-size: 90%;
 }
 
-#ws-main{
-	padding: 2em 0.5em 0 0.5em;
+#ws-tabs {
+	padding: 1em 0.5em 0 1em;	
+}
+
+#ws-main, #config-main {
+	padding: 2em 0.5em 0 1em;
+	font-family: Arial, sans-serif;
 }
 
 .cmdbtn {
 	border: 1px solid #f0f0f0;
-	margin: 0.2em;
+	margin: 0.2em 0 0 0.1em;
 	padding: 0.1em;
 }
 
-.field {
-	margin: 1em 0 0 0;
-}
-
 .fnote {
-	padding: 0.1em 0 0 0;
+	padding: 0.5em 0 0 0;
 	color: #606060;
-	font-size: 8pt;
+	font-size: 90%;
 }
 
 .cmdbar {
@@ -118,10 +147,11 @@ fieldset label {
 .datasource {
 	cursor: pointer;
 	color: #000;
+	margin: 0.5em 0 0 0;
 }
 
 .ws-ds {
-	margin: 0 0 1em 0;
+	margin: 0 0 1em 1em;
 	font-size: 9pt;
 }
 
@@ -133,6 +163,7 @@ fieldset label {
 	color: #a0a0a0;
 	margin: 0 0.1em 0 0;
 	font-size: 11pt;
+	font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;  
 	-moz-border-radius: 2px 2px 2px 2px;
 	-webkit-border-radius: 2px 2px 2px 2px;
 	cursor: pointer;
