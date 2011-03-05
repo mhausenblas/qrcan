@@ -1,9 +1,9 @@
 <div class="pane-title">Add data source ...</div>
 <form id="ds-form" action="">
 	<div class="field">
-		<label>Identifier</label><br />
-		<input id="ds-id" type="text" size="15" />
-		<div class="fnote">Provide an identifier for the data source, for example 'mydatasource'.</div>
+		<label>Name</label><br />
+		<input id="ds-name" type="text" size="15" /> <span id="ds-id"></span>
+		<div class="fnote">Provide a name for the data source.</div>
 	</div>
 	<div class="field">
 		<fieldset>
@@ -12,7 +12,7 @@
 			<input id="ds-access-sparql" type="text" size="30" /> or <br />
 			<label>RDF document</label><br />
 			<input id="ds-access-dump" type="text" size="30" />
-		<div class="fnote">Provide the way the data source can be accessed, either by specifying a SPARQL Endpoint URI or the location of an RDF document.</div>
+		<div class="fnote">Provide the way the data source can be accessed, either by specifying a SPARQL Endpoint URI or the location of an RDF document. See also the <a href="http://labs.mondeca.com/sparqlEndpointsStatus/" target="_new">list of public SPARQL Endpoints</a> and their status.</div>
 		</fieldset>	
 	</div>
 	<div class="field">

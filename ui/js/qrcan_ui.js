@@ -1,6 +1,20 @@
 $(function() {
 	listDatasources();
 	
+	/* actions */
+	// add or change a data source
+	$("#ds-name").live("keyup", function () {
+		var dsName = $("#ds-name").val().toLowerCase();
+		var dsID = generateDatasourceID(dsName);
+		$("#ds-id").text(dsID);
+	});
+	
+	$("#ds-update").live("click", function() {
+		// POST to api/datasources
+		// refresh list
+	});
+	
+	/* menu */
 	// cmd buttons
 	$("#ds-refresh").click(function () {
 		$("#workspace").html("");
@@ -54,6 +68,16 @@ $(function() {
 		$(this).css("border", "1px solid #f0f0f0");
 	});
 });
+
+function generateDatasourceID(dsName){
+	var dsid = removeAllWS(dsName);
+	dsid = dsid.replace(/[^a-zA-Z0-9-_]/g, '');	
+	return "http://localhost:6969/api/datasource/" + dsid;
+}
+
+function removeAllWS(text){
+	return (text || "").replace( /\s+/g, "");
+}
 
 function listDatasources(){
 	$.getJSON("../api/datasource/all", function(data) {

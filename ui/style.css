@@ -79,6 +79,12 @@ fieldset label {
 	font-size: 10pt;
 }
 
+#ds-id {
+	color: #d0d0d0;
+	padding: 0 0 0 1em;
+	font-size: 90%;
+}
+
 #ws-main{
 	padding: 2em 0.5em 0 0.5em;
 }
