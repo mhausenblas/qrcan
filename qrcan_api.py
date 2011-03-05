@@ -26,6 +26,7 @@ class QrcanAPI:
 		self.apimap = {
 				'/api/datasource/all' : 'list_all_datasets'
 		}
+		
 	def dispatch_api_call(self, noun):
 		try:
 			m = getattr(self, self.apimap[str(noun)])
@@ -45,14 +46,3 @@ class QrcanAPI:
 			ds, title = tuple(row)
 			dslist.append({ 'id' : ds, 'title' : title})
 		self.out.write(json.JSONEncoder().encode(dslist))
-		
-#	def _load(self, URI):
-#		self.g.parse(URI)
-		
-#	def _execute(self, querystr):
-#		for row in self.g.query(querystr):
-#		    print row
-
-# 			s = SPARQLocal()
-#			s.load("http://www.w3.org/People/Berners-Lee/card.rdf")
-#			s.execute("SELECT * WHERE { ?who ?x ?whom }")
