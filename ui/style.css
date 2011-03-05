@@ -129,9 +129,11 @@ fieldset label {
 }
 
 .fnote {
+	margin: 1em 0 0 0;
 	padding: 0.5em 0 0 0;
 	color: #606060;
 	font-size: 90%;
+	width: 60%;
 }
 
 .cmdbar {
