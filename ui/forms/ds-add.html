@@ -1,5 +1,5 @@
 <div class="pane-title">Add data source ...</div>
-<form id="ds-form" action="">
+<div id="ds-form">
 	<fieldset>
 		<legend>Name</legend>
 			<input id="ds-name" type="text" size="15" /> <span id="ds-id"></span>
@@ -7,8 +7,8 @@
 	</fieldset>
 	<fieldset>
 		<legend>Access method</legend>
-			<input id="ds-access" type="text" size="50" /> 
-			<select size="1">
+			<input id="ds-access-uri" type="text" size="50" /> 
+			<select id="ds-access" size="1">
 			  <option value="doc">RDF document</option>
 			  <option value="sparql">SPARQL Endpoint URI</option>
 			</select>
@@ -16,8 +16,8 @@
 	</fieldset>	
 	<fieldset>
 		<legend>Access mode</legend>
-		<input type="radio" name="ds-mode" value="local"> local <input type="radio" name="ds-mode" value="remote" checked="checked"> remote
+		<input type="radio" name="ds-mode" value="local" /> local <input type="radio" name="ds-mode" value="remote" checked="checked"/> remote
 		<div class="fnote">Specify the way the data source should be accessed: if you choose <strong>local</strong>, the data source will be downloaded to the local store. If you choose <strong>remote</strong>, the data source will be queried live.</div>
 	</fieldset>
 	<div class="cmdbar"><button id="ds-update">Add ...</button></div>
-</form>
+</div>

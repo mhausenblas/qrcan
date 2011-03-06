@@ -10,7 +10,7 @@ $(function() {
 	});
 	
 	$("#ds-update").live("click", function() {
-		// POST to api/datasources
+		updateDatasource();
 		// refresh list
 	});
 	
@@ -27,7 +27,7 @@ $(function() {
 		});
 	});
 	
-	$("#config").click(function () {
+	$("#config").click(function () {		
 		$.get("forms/config.html", function(data) {
 			$("#workspace").html(data);
 		});
@@ -72,7 +72,7 @@ $(function() {
 function generateDatasourceID(dsName){
 	var dsid = removeAllWS(dsName);
 	dsid = dsid.replace(/[^a-zA-Z0-9-_]/g, '');	
-	return "http://localhost:6969/api/datasource/" + dsid;
+	return dsid;
 }
 
 function removeAllWS(text){
@@ -87,6 +87,31 @@ function listDatasources(){
 			b += "<div class='datasource' resource='" + ds["id"] + "'><img src='img/ds.png' alt='Data source ...' title='Data source ...' /> " + ds["title"] + "</div>";
 		}
 		$("#datasources").html(b);
+	});
+}
+
+function updateDatasource(){
+	var dsdata = {
+		id : $("#ds-id").text(),
+		name : $("#ds-name").val(),
+		access_method : $("#ds-access").val(),
+		access_uri : $("#ds-access-uri").val(),
+		access_mode : $("input:radio[name='ds-mode']:checked").val()
+	};
+	
+	dsdata = $.toJSON(dsdata);
+	
+	$.ajax({
+		type: "POST",
+		url: "../api/datasource",
+		data: "dsdata="+ dsdata,
+		success: function(data){
+			$("#workspace").html(data);
+			listDatasources();
+		},
+		error:  function(msg){
+			alert(msg);
+		} 
 	});
 }
 

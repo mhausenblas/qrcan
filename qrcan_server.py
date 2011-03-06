@@ -9,6 +9,7 @@ Created by Michael Hausenblas on 2011-03-04.
 import sys	
 import BaseHTTPServer
 import SimpleHTTPServer
+import urlparse
 import qrcan_api
 from optparse import OptionParser
 
@@ -20,7 +21,7 @@ class QrcanWebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			self.send_response(200)
 			self.send_header('Content-type', 'application/json')
 			self.end_headers()
-			qrcanapi = qrcan_api.QrcanAPI(self.wfile)
+			qrcanapi = qrcan_api.QrcanAPI(self.rfile, self.wfile, self.headers)
 			qrcanapi.dispatch_api_call(self.path)
 			return self
 		else:
@@ -28,6 +29,17 @@ class QrcanWebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 				return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 			else: 
 				self.send_error(404)
+
+	def do_POST(self):
+		if self.path.startswith("/api"):
+			self.send_response(201)
+			self.end_headers()
+			qrcanapi = qrcan_api.QrcanAPI(self.rfile, self.wfile, self.headers)
+			qrcanapi.dispatch_api_call(self.path)
+		else:
+			self.send_error(404)
+
+
 
 if __name__ == '__main__':
 	parser = OptionParser()
