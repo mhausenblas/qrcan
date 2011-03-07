@@ -5,10 +5,13 @@ qrcan_api.py
 
 Created by Michael Hausenblas on 2011-03-04.
 """
+import logging
+_logger = logging.getLogger('qrcan')
 
 import sys
 import os
 import rdflib
+import cgi
 try:
     import json
 except ImportError:
@@ -18,7 +21,7 @@ from rdflib import Namespace
 from rdflib import URIRef
 from rdflib import Literal
 from rdflib import RDF
-import cgi
+from qrcan_exceptions import *
 
 rdflib.plugin.register('sparql', rdflib.query.Processor, 'rdfextras.sparql.processor', 'Processor')
 rdflib.plugin.register('sparql', rdflib.query.Result, 'rdfextras.sparql.query', 'SPARQLQueryResult')
@@ -46,21 +49,20 @@ class QrcanAPI:
 			m()
 		except KeyError: # handling potentially dynamic resources
 			if noun.startswith('/api/datasource/'):
-				ds_desc = ''.join(['datasources/', noun.split("/")[-1], '.ttl'])
-				self.outstream.write(open(ds_desc, 'r').read())
-				# TODO: make sure that it gets served as Turtle
+				try:
+					self._serve_ds_description(noun.split("/")[-1])
+				except DatasourceNotExists:
+					_logger.debug('data source does not exist')
+					raise HTTP404
 			else:
-				print 'Unknown noun %s' %noun
+				_logger.debug('unknown noun %s' %noun)
+				raise HTTP404
 
 	def list_all_datasets(self):
-		dslist = list()
 		for f in os.listdir('datasources'):
 			if f.endswith('.ttl'):
 				self.datasources.parse('datasources/' + f, format='n3')
-		querystr = 'SELECT ?ds ?title WHERE { ?ds a void:Dataset ; dcterms:title ?title . }'
-		for row in self.datasources.query(querystr, initNs=QrcanAPI.NAMESPACES):
-			ds, title = tuple(row)
-			dslist.append({ 'id' : ds, 'title' : title})
+		dslist = self._get_ds(self.datasources)
 		self.outstream.write(json.JSONEncoder().encode(dslist))
 
 	def update_dataset(self):
@@ -82,10 +84,22 @@ class QrcanAPI:
 			return params
 		else:
 			return None
+
+	def _serve_ds_description(self, ds_id):
+		ds_desc = ''.join(['datasources/', ds_id, '.ttl'])
+		try:
+			ds_file = open(ds_desc, 'r')
+		except IOError:
+		  raise DatasourceNotExists
+		else:
+			ds = Graph()
+			ds.parse(ds_desc, format='n3')
+			self.outstream.write(json.JSONEncoder().encode(self._get_ds(ds)))
 	
-	def _create_ds_description(self, id, name, access_method, access_uri, access_mode):
+	
+	def _create_ds_description(self, ds_id, name, access_method, access_uri, access_mode):
 		void_dataset = QrcanAPI.NAMESPACES['void']['Dataset']
-		ds = URIRef('http://localhost:6969/datasource/' + str(id))
+		ds = URIRef('http://localhost:6969/api/datasource/' + str(ds_id))
 		ds_graph = Graph()
 		ds_graph.add((ds, RDF.type, void_dataset))
 		ds_graph.add((ds, QrcanAPI.NAMESPACES['dcterms']['title'], Literal(name)))
@@ -96,6 +110,18 @@ class QrcanAPI:
 		ds_graph.bind('void', QrcanAPI.NAMESPACES['void'], True)
 		ds_graph.bind('dcterms', QrcanAPI.NAMESPACES['dcterms'], True)
 		ds_graph.bind('qrcan', QrcanAPI.NAMESPACES['qrcan'], True)
-		ds_file = open(''.join(['datasources/', id, '.ttl']), 'w')
+		ds_file = open(''.join(['datasources/', ds_id, '.ttl']), 'w')
 		ds_file.write(ds_graph.serialize(format='n3'))
 		ds_file.close()
+		
+	def _get_ds(self, graph):
+		dslist = list()
+		querystr = 'SELECT * WHERE { ?ds a void:Dataset ; dcterms:title ?title . OPTIONAL { ?ds void:dataDump ?dump; } }'
+		res = graph.query(querystr, initNs=QrcanAPI.NAMESPACES)
+		for r in res.bindings:
+			_logger.debug(r)
+			if r['ds']: ds = r['ds']
+			if r['title']: title = r['title']
+			if r['dump']: dump = r['dump']
+			dslist.append({ 'id' : ds, 'name' : title, 'access_uri' : dump })
+		return dslist

@@ -84,7 +84,7 @@ function listDatasources(){
 		var b = "";
 		for(i in data) {
 			var ds = data[i];
-			b += "<div class='datasource' resource='" + ds["id"] + "'><img src='img/ds.png' alt='Data source ...' title='Data source ...' /> " + ds["title"] + "</div>";
+			b += "<div class='datasource' resource='" + ds["id"] + "'><img src='img/ds.png' alt='Data source ...' title='Data source ...' /> " + ds["name"] + "</div>";
 		}
 		$("#datasources").html(b);
 	});

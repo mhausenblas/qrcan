@@ -6,11 +6,19 @@ qrcan_server.py
 Created by Michael Hausenblas on 2011-03-04.
 """
 
+import logging
+_logger = logging.getLogger('qrcan')
+_logger.setLevel(logging.DEBUG)
+_handler = logging.StreamHandler()
+_handler.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
+_logger.addHandler(_handler)
+
 import sys	
 import BaseHTTPServer
 import SimpleHTTPServer
 import urlparse
 import qrcan_api
+from qrcan_exceptions import *
 from optparse import OptionParser
 
 QRCAN_DEFAULT_PORT = 6969
@@ -21,13 +29,19 @@ class QrcanWebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			self.send_response(200)
 			self.send_header('Content-type', 'application/json')
 			self.end_headers()
-			qrcanapi = qrcan_api.QrcanAPI(self.rfile, self.wfile, self.headers)
-			qrcanapi.dispatch_api_call(self.path)
-			return self
+			try:
+				qrcanapi = qrcan_api.QrcanAPI(self.rfile, self.wfile, self.headers)
+				qrcanapi.dispatch_api_call(self.path)
+			except HTTP404:
+				_logger.warning('unsupported API call')
+				self.send_error(404)
+			else:
+				return self
 		else:
 			if self.path.startswith("/ui"):
 				return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 			else: 
+				_logger.warning('neither UI nor API call')
 				self.send_error(404)
 
 	def do_POST(self):
@@ -58,8 +72,11 @@ if __name__ == '__main__':
 			parser.error('The port number has to be numeric, between 1 and 65535)')
 	
 	httpd = BaseHTTPServer.HTTPServer(('', port), QrcanWebHandler)
-	print "qrcan server running on port %s" %port
-  
+	print '-'*40
+	print 'qrcan server running on port %s ...' %port
+	print '-'*40
+	
+ 
 	try:
 		httpd.serve_forever()
 	except KeyboardInterrupt:
