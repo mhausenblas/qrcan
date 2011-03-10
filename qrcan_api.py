@@ -12,6 +12,7 @@ import sys
 import os
 import rdflib
 import cgi
+import datetime
 try:
     import json
 except ImportError:
@@ -21,6 +22,8 @@ from rdflib import Namespace
 from rdflib import URIRef
 from rdflib import Literal
 from rdflib import RDF
+from rdflib import XSD
+
 from qrcan_exceptions import *
 
 rdflib.plugin.register('sparql', rdflib.query.Processor, 'rdfextras.sparql.processor', 'Processor')
@@ -98,19 +101,21 @@ class QrcanAPI:
 	
 	
 	def _create_ds_description(self, ds_id, name, access_method, access_uri, access_mode):
-		void_dataset = QrcanAPI.NAMESPACES['void']['Dataset']
 		if ds_id.startswith('http://'):
 			ds_id = ds_id.split("/")[-1]
-
+			
+		#create an extended VoID description of the data source
 		ds = URIRef('http://localhost:6969/api/datasource/' + str(ds_id))
 		ds_graph = Graph()
-		ds_graph.add((ds, RDF.type, void_dataset))
+		ds_graph.add((ds, RDF.type,  QrcanAPI.NAMESPACES['void']['Dataset']))
 		ds_graph.add((ds, QrcanAPI.NAMESPACES['dcterms']['title'], Literal(name)))
 		if(access_method == 'doc'):
 			ds_graph.add((ds, QrcanAPI.NAMESPACES['void']['dataDump'], URIRef(access_uri)))
 		else:
 			ds_graph.add((ds, QrcanAPI.NAMESPACES['void']['sparqlEndpoint'], URIRef(access_uri)))
 		ds_graph.add((ds, QrcanAPI.NAMESPACES['qrcan']['mode'], URIRef(str(QrcanAPI.NAMESPACES['qrcan'] + access_mode))))
+		ds_graph.add((ds, QrcanAPI.NAMESPACES['dcterms']['modified'], Literal(datetime.datetime.utcnow())))
+
 		
 		# store VoID description:
 		ds_graph.bind('void', QrcanAPI.NAMESPACES['void'], True)

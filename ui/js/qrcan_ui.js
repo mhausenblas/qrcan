@@ -110,7 +110,7 @@ function updateDatasource(){
 		url: "../api/datasource",
 		data: "dsdata="+ dsdata,
 		success: function(data){
-			//$("#workspace").html(data);
+			$("#workspace").html("");
 			listDatasources();
 		},
 		error:  function(msg){
