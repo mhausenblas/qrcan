@@ -108,6 +108,7 @@ fieldset label {
 }
 
 #ds-id {
+	display: none;
 	color: #d0d0d0;
 	padding: 0 0 0 1em;
 	font-size: 90%;

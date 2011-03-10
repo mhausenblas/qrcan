@@ -6,7 +6,9 @@ $(function() {
 	$("#ds-name").live("keyup", function () {
 		var dsName = $("#ds-name").val().toLowerCase();
 		var dsID = generateDatasourceID(dsName);
-		$("#ds-id").text(dsID);
+		if($("#ws-main #ds-update").text() != "Update") { // only generate ID for add ....
+			$("#ds-id").text(dsID);
+		}
 	});
 	
 	$("#ds-update").live("click", function() {
@@ -48,11 +50,13 @@ $(function() {
 	// tab selection
 	$(".ws-tab").live("click", function() {
 		var tabID = $(this).attr("id");
+		var dsID = $("#ws-selected-ds a").attr("href");
+		
 		$(".ws-tab").each(function() {
 			$(this).removeClass("active-tab");
 		});
 		$(this).addClass("active-tab");
-		selectTab(tabID);
+		selectTab(tabID, dsID);
 	});
 	
 	// hoover effects
@@ -106,7 +110,7 @@ function updateDatasource(){
 		url: "../api/datasource",
 		data: "dsdata="+ dsdata,
 		success: function(data){
-			$("#workspace").html(data);
+			//$("#workspace").html(data);
 			listDatasources();
 		},
 		error:  function(msg){
@@ -115,7 +119,7 @@ function updateDatasource(){
 	});
 }
 
-function selectTab(tabID, dsID){
+function selectTab(tabID, dsID) {
 	var tabMap = { 
 		"ws-tab-query" : "forms/ds-query.html",
 		"ws-tab-status" : "forms/ds-status.html",
@@ -123,8 +127,28 @@ function selectTab(tabID, dsID){
 		"ws-tab-export" : "forms/ds-export.html",
 		"ws-tab-admin" : "forms/ds-admin.html"
 	}
+
+	if(tabID == "ws-tab-admin") {
+		$.get("forms/ds-add.html", function(data) {
+			$("#ws-main").html(data);
+			// adapt form
+			$("#ws-main .pane-title").html("");
+			$("#ws-main #ds-update").text("Update");
+		});
+		// set form values
+		$.getJSON(dsID, function(data) {
+			$("#ds-id").text(data[0].id);
+			$("#ds-name").val(data[0].name);
+			$("#ds-access option[value='" + data[0].access_method + "']").attr("selected", true);
+ 			$("#ds-access-uri").val(data[0].access_uri);
+			$("input:radio[name='ds-mode'][value='" + data[0].access_mode +"']").attr('checked', true);
+		});
 	
-	$.get(tabMap[tabID], function(data) {
-		$("#ws-main").html(data);
-	});	
+	}
+	else {
+		$.get(tabMap[tabID], function(data) {
+			$("#ws-main").html(data);
+		});
+	}
 }
+

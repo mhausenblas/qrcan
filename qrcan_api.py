@@ -99,11 +99,17 @@ class QrcanAPI:
 	
 	def _create_ds_description(self, ds_id, name, access_method, access_uri, access_mode):
 		void_dataset = QrcanAPI.NAMESPACES['void']['Dataset']
+		if ds_id.startswith('http://'):
+			ds_id = ds_id.split("/")[-1]
+
 		ds = URIRef('http://localhost:6969/api/datasource/' + str(ds_id))
 		ds_graph = Graph()
 		ds_graph.add((ds, RDF.type, void_dataset))
 		ds_graph.add((ds, QrcanAPI.NAMESPACES['dcterms']['title'], Literal(name)))
-		ds_graph.add((ds, QrcanAPI.NAMESPACES['void']['dataDump'], URIRef(access_uri)))
+		if(access_method == 'doc'):
+			ds_graph.add((ds, QrcanAPI.NAMESPACES['void']['dataDump'], URIRef(access_uri)))
+		else:
+			ds_graph.add((ds, QrcanAPI.NAMESPACES['void']['sparqlEndpoint'], URIRef(access_uri)))
 		ds_graph.add((ds, QrcanAPI.NAMESPACES['qrcan']['mode'], URIRef(str(QrcanAPI.NAMESPACES['qrcan'] + access_mode))))
 		
 		# store VoID description:
@@ -116,12 +122,31 @@ class QrcanAPI:
 		
 	def _get_ds(self, graph):
 		dslist = list()
-		querystr = 'SELECT * WHERE { ?ds a void:Dataset ; dcterms:title ?title . OPTIONAL { ?ds void:dataDump ?dump; } }'
+		querystr = 'SELECT * WHERE { ?ds a void:Dataset ; dcterms:title ?title; qrcan:mode ?accessMode . OPTIONAL { ?ds void:dataDump ?dumpURI . } OPTIONAL { ?ds void:sparqlEndpoint ?sparqlURI . } }'
 		res = graph.query(querystr, initNs=QrcanAPI.NAMESPACES)
 		for r in res.bindings:
-			_logger.debug(r)
-			if r['ds']: ds = r['ds']
+			if r['ds']:
+				ds = r['ds']
+				#_logger.debug(ds)
 			if r['title']: title = r['title']
-			if r['dump']: dump = r['dump']
-			dslist.append({ 'id' : ds, 'name' : title, 'access_uri' : dump })
+			try:
+				if r['dumpURI']:
+					access_uri = r['dumpURI']
+					access_method = 'doc'
+			except KeyError:
+				pass
+			try:
+				if r['sparqlURI']:
+					access_uri = r['sparqlURI']
+					access_method = 'sparql'
+			except KeyError:
+				pass
+			if r['accessMode']:
+				if str(r['accessMode']) == 'http://vocab.deri.ie/qrcan#remote':
+					access_mode = 'remote'
+				else:
+					access_mode = 'local'
+					
+			
+			dslist.append({ 'id' : ds, 'name' : title, 'access_method' : access_method, 'access_uri' : access_uri, 'access_mode' : access_mode })
 		return dslist
