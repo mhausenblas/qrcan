@@ -41,11 +41,12 @@ class QrcanAPI:
 	
 	def __init__(self):
 		self.datasources = Graph()
+		self.dslist = list()
 		self.store = QrcanStore()
 		self.apimap = {
-				'/api/datasource/all' : 'list_all_datasets',
-				'/api/datasource' : 'update_dataset',
-				'/api/query' : 'query_dataset'
+				'/api/datasource/all' : 'list_all_datasources',
+				'/api/datasource' : 'update_datasource',
+				'/api/query' : 'query_datasource'
 		}
 		
 	def dispatch_api_call(self, noun, instream, outstream, headers):
@@ -63,30 +64,25 @@ class QrcanAPI:
 				_logger.debug('unknown noun %s' %noun)
 				raise HTTP404
 
-	def init_datasets(self):
-		_logger.debug('scanning  %s for data sources ...' %QrcanAPI.DATASOURCES_METADATA_BASE)
+	def init_datasources(self):
+		_logger.debug('scanning [%s] for data sources ...' %QrcanAPI.DATASOURCES_METADATA_BASE)
 		for f in os.listdir(QrcanAPI.DATASOURCES_METADATA_BASE):
 			if f.endswith('.ttl'):
 				self.datasources.parse(''.join([QrcanAPI.DATASOURCES_METADATA_BASE, '/', f]), format='n3')
-				#self.store.load(''.join([QrcanAPI.DATASOURCES_METADATA_BASE, '/', f]))
-		dslist = self._get_ds(self.datasources)
-		for ds in dslist:
+		self.dslist = self._get_ds(self.datasources)
+		for ds in self.dslist:
 			_logger.debug('loading %s' %ds['id'])
 		
-	def query_dataset(self, instream, outstream, headers):
+	def query_datasource(self, instream, outstream, headers):
 		_logger.debug("query ds")
 		res = self.store.query_datasource('http://localhost:6969/api/datasource/michaelsfoaffile', 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?label WHERE { ?s rdfs:label ?label }')
 		for r in res:
 			outstream.write(str(r))
 		
-	def list_all_datasets(self, instream, outstream, headers):
-		for f in os.listdir(QrcanAPI.DATASOURCES_METADATA_BASE):
-			if f.endswith('.ttl'):
-				self.datasources.parse(''.join([QrcanAPI.DATASOURCES_METADATA_BASE, '/', f]), format='n3')
-		dslist = self._get_ds(self.datasources)
-		outstream.write(json.JSONEncoder().encode(dslist))
+	def list_all_datasources(self, instream, outstream, headers):
+		outstream.write(json.JSONEncoder().encode(self.dslist))
 
-	def update_dataset(self, instream, outstream, headers):
+	def update_datasource(self, instream, outstream, headers):
 		dsdata = self._get_formenc_param(instream, headers, 'dsdata')
 		if dsdata:
 			_logger.info('Creating data source with following characteristics:')
@@ -96,7 +92,7 @@ class QrcanAPI:
 			self.store.add_datasource_doc(space_id, dsdata['access_uri'])
 		else:
 			_logger.info('Creating stub data source due to insufficient information provided.')
-			
+		self.init_datasources()
 				
 	def _get_formenc_param(self, instream, headers, param):
 		encparams = instream.read(int(headers.getheader('content-length')))
@@ -170,7 +166,6 @@ class QrcanAPI:
 					access_mode = 'remote'
 				else:
 					access_mode = 'local'
-					
 			
 			dslist.append({ 'id' : ds, 'name' : title, 'access_method' : access_method, 'access_uri' : access_uri, 'access_mode' : access_mode })
 		return dslist

@@ -14,6 +14,7 @@ from rdflib import URIRef
 from rdflib import Literal
 from rdflib import RDF
 from rdflib import XSD
+from rdflib.plugin import PluginException
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 

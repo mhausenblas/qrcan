@@ -25,7 +25,7 @@ QRCAN_DEFAULT_PORT = 6969
 
 class QrcanWebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	qrcanapi = qrcan_api.QrcanAPI()
-	qrcanapi.init_datasets()
+	qrcanapi.init_datasources()
 	
 	def do_GET(self):
 		if self.path.startswith("/api"):
