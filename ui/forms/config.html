@@ -1,4 +1,12 @@
 <div class="pane-title">Configure qrcan ...</div>
 <div id="config-main">
-	configure local RDF store, base URI
+	<fieldset>
+		<legend>Data source store</legend>
+			<select id="config-store-type" size="1">
+			  <option value="internal">Internal</option>
+			  <option value="external">External</option>
+			</select>
+			<div class="fnote">Define the place where qrcan should store the data sources: if you choose <strong>external</strong>, you must specify a SPARQL Endpoint where you have write access.</div>
+			<div id="config-store-external"></div>
+	</fieldset>
 </div>
