@@ -24,14 +24,17 @@ from optparse import OptionParser
 QRCAN_DEFAULT_PORT = 6969
 
 class QrcanWebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+	qrcanapi = qrcan_api.QrcanAPI()
+	qrcanapi.init_datasets()
+	
 	def do_GET(self):
 		if self.path.startswith("/api"):
 			self.send_response(200)
 			self.send_header('Content-type', 'application/json')
 			self.end_headers()
 			try:
-				qrcanapi = qrcan_api.QrcanAPI(self.rfile, self.wfile, self.headers)
-				qrcanapi.dispatch_api_call(self.path)
+				
+				QrcanWebHandler.qrcanapi.dispatch_api_call(self.path, self.rfile, self.wfile, self.headers)
 			except HTTP404:
 				_logger.warning('unsupported API call')
 				self.send_error(404)
@@ -48,8 +51,7 @@ class QrcanWebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		if self.path.startswith("/api"):
 			self.send_response(201)
 			self.end_headers()
-			qrcanapi = qrcan_api.QrcanAPI(self.rfile, self.wfile, self.headers)
-			qrcanapi.dispatch_api_call(self.path)
+			QrcanWebHandler.qrcanapi.dispatch_api_call(self.path, self.rfile, self.wfile, self.headers)
 		else:
 			self.send_error(404)
 

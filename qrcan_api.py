@@ -25,6 +25,7 @@ from rdflib import RDF
 from rdflib import XSD
 
 from qrcan_exceptions import *
+from qrcan_store import *
 
 rdflib.plugin.register('sparql', rdflib.query.Processor, 'rdfextras.sparql.processor', 'Processor')
 rdflib.plugin.register('sparql', rdflib.query.Result, 'rdfextras.sparql.query', 'SPARQLQueryResult')
@@ -36,24 +37,25 @@ class QrcanAPI:
 					
 	}
 	
-	def __init__(self, instream, outstream, headers):
+	DATASOURCES_METADATA_BASE = 'datasources'
+	
+	def __init__(self):
 		self.datasources = Graph()
-		self.instream = instream
-		self.outstream = outstream
-		self.headers = headers
+		self.store = QrcanStore()
 		self.apimap = {
 				'/api/datasource/all' : 'list_all_datasets',
-				'/api/datasource' : 'update_dataset'
+				'/api/datasource' : 'update_dataset',
+				'/api/query' : 'query_dataset'
 		}
 		
-	def dispatch_api_call(self, noun):
+	def dispatch_api_call(self, noun, instream, outstream, headers):
 		try:
 			m = getattr(self, self.apimap[str(noun)]) # handling fixed resources
-			m()
+			m(instream, outstream, headers)
 		except KeyError: # handling potentially dynamic resources
 			if noun.startswith('/api/datasource/'):
 				try:
-					self._serve_ds_description(noun.split("/")[-1])
+					self._serve_ds_description(outstream, noun.split("/")[-1])
 				except DatasourceNotExists:
 					_logger.debug('data source does not exist')
 					raise HTTP404
@@ -61,26 +63,43 @@ class QrcanAPI:
 				_logger.debug('unknown noun %s' %noun)
 				raise HTTP404
 
-	def list_all_datasets(self):
-		for f in os.listdir('datasources'):
+	def init_datasets(self):
+		_logger.debug('scanning  %s for data sources ...' %QrcanAPI.DATASOURCES_METADATA_BASE)
+		for f in os.listdir(QrcanAPI.DATASOURCES_METADATA_BASE):
 			if f.endswith('.ttl'):
-				self.datasources.parse('datasources/' + f, format='n3')
+				self.datasources.parse(''.join([QrcanAPI.DATASOURCES_METADATA_BASE, '/', f]), format='n3')
+				#self.store.load(''.join([QrcanAPI.DATASOURCES_METADATA_BASE, '/', f]))
 		dslist = self._get_ds(self.datasources)
-		self.outstream.write(json.JSONEncoder().encode(dslist))
+		for ds in dslist:
+			_logger.debug('loading %s' %ds['id'])
+		
+	def query_dataset(self, instream, outstream, headers):
+		_logger.debug("query ds")
+		res = self.store.query_datasource('http://localhost:6969/api/datasource/michaelsfoaffile', 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?label WHERE { ?s rdfs:label ?label }')
+		for r in res:
+			outstream.write(str(r))
+		
+	def list_all_datasets(self, instream, outstream, headers):
+		for f in os.listdir(QrcanAPI.DATASOURCES_METADATA_BASE):
+			if f.endswith('.ttl'):
+				self.datasources.parse(''.join([QrcanAPI.DATASOURCES_METADATA_BASE, '/', f]), format='n3')
+		dslist = self._get_ds(self.datasources)
+		outstream.write(json.JSONEncoder().encode(dslist))
 
-	def update_dataset(self):
-		dsdata = self._get_formenc_param('dsdata')
+	def update_dataset(self, instream, outstream, headers):
+		dsdata = self._get_formenc_param(instream, headers, 'dsdata')
 		if dsdata:
-			self.outstream.write('Creating data source with following characteristics: <br />')
+			_logger.info('Creating data source with following characteristics:')
 			for key in dsdata.keys():
-				self.outstream.write('%s = %s <br />' %(key, dsdata[key]))
-			self._create_ds_description(dsdata['id'], dsdata['name'], dsdata['access_method'], dsdata['access_uri'], dsdata['access_mode'])
+				_logger.info('%s = %s' %(key, dsdata[key]))
+			space_id = self._create_ds_description(dsdata['id'], dsdata['name'], dsdata['access_method'], dsdata['access_uri'], dsdata['access_mode'])
+			self.store.add_datasource_doc(space_id, dsdata['access_uri'])
 		else:
-				self.outstream.write('Creating stub data source due to insufficient information provided.')
+			_logger.info('Creating stub data source due to insufficient information provided.')
 			
 				
-	def _get_formenc_param(self, param):
-		encparams = self.instream.read(int(self.headers.getheader('content-length')))
+	def _get_formenc_param(self, instream, headers, param):
+		encparams = instream.read(int(headers.getheader('content-length')))
 		params = cgi.parse_qs(encparams)
 		if params[param]:
 			params = json.JSONDecoder().decode(params[param][0])
@@ -88,8 +107,8 @@ class QrcanAPI:
 		else:
 			return None
 
-	def _serve_ds_description(self, ds_id):
-		ds_desc = ''.join(['datasources/', ds_id, '.ttl'])
+	def _serve_ds_description(self, outstream, ds_id):
+		ds_desc = ''.join([QrcanAPI.DATASOURCES_METADATA_BASE, '/', ds_id, '.ttl'])
 		try:
 			ds_file = open(ds_desc, 'r')
 		except IOError:
@@ -97,7 +116,7 @@ class QrcanAPI:
 		else:
 			ds = Graph()
 			ds.parse(ds_desc, format='n3')
-			self.outstream.write(json.JSONEncoder().encode(self._get_ds(ds)))
+			outstream.write(json.JSONEncoder().encode(self._get_ds(ds)))
 	
 	
 	def _create_ds_description(self, ds_id, name, access_method, access_uri, access_mode):
@@ -115,15 +134,15 @@ class QrcanAPI:
 			ds_graph.add((ds, QrcanAPI.NAMESPACES['void']['sparqlEndpoint'], URIRef(access_uri)))
 		ds_graph.add((ds, QrcanAPI.NAMESPACES['qrcan']['mode'], URIRef(str(QrcanAPI.NAMESPACES['qrcan'] + access_mode))))
 		ds_graph.add((ds, QrcanAPI.NAMESPACES['dcterms']['modified'], Literal(datetime.datetime.utcnow())))
-
 		
 		# store VoID description:
 		ds_graph.bind('void', QrcanAPI.NAMESPACES['void'], True)
 		ds_graph.bind('dcterms', QrcanAPI.NAMESPACES['dcterms'], True)
 		ds_graph.bind('qrcan', QrcanAPI.NAMESPACES['qrcan'], True)
-		ds_file = open(''.join(['datasources/', ds_id, '.ttl']), 'w')
+		ds_file = open(''.join([QrcanAPI.DATASOURCES_METADATA_BASE, '/', ds_id, '.ttl']), 'w')
 		ds_file.write(ds_graph.serialize(format='n3'))
 		ds_file.close()
+		return str(ds)
 		
 	def _get_ds(self, graph):
 		dslist = list()
