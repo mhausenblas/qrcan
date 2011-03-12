@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+xmlns:foaf="http://xmlns.com/foaf/0.1/"
+xmlns:owl="http://www.w3.org/2002/07/owl#"
+xmlns:bio="http://purl.org/vocab/bio/0.1/"
+xmlns:dbpedia="http://dbpedia.org/resource/"
+xmlns:ov="http://open.vocab.org/terms/"
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+xmlns:dc="http://purl.org/dc/terms/"
+xmlns:v="http://www.w3.org/2006/vcard/ns#"
+xmlns:swc="http://data.semanticweb.org/ns/swc/ontology#"
+xmlns:swrc="http://swrc.ontoware.org/ontology#"
+>
+<head>
+<title property="dc:title">Richard Cyganiak's Homepage</title>
+<base href="http://richard.cyganiak.de/" />
+<link rel="openid.server" href="http://www.myopenid.com/server" />
+<link rel="openid.delegate" href="http://cygri.myopenid.com/" />
+<link rel="openid2.local_id" href="http://cygri.myopenid.com" />
+<link rel="openid2.provider" href="http://www.myopenid.com/server" />
+<meta http-equiv="X-XRDS-Location" content="http://www.myopenid.com/xrds?username=cygri.myopenid.com" />
+<link rel="stylesheet" href="style.css" type="text/css" />
+<link rel="meta" href="foaf.rdf" type="application/rdf+xml" />
+<link rel="meta" href="foaf.n3" type="text/rdf+n3" />
+<link rel="foaf:primaryTopic foaf:maker" rev="foaf:homepage" href="#me" />
+</head>
+
+<body about="#me" typeof="foaf:Person">
+
+<h1 property="foaf:name">Richard Cyganiak</h1>
+
+<div class="userpic" rel="foaf:img">
+<img src="/2007/01/richard.jpg" alt="A photo of me" />
+</div>
+
+<dl>
+<dt>Mini bio:</dt>
+<dd property="bio:olb" datatype="">Linked data technologist at the <a rel="foaf:workplaceHomepage" href="http://linkeddata.deri.ie/">LiDRC</a>, <a href="http://www.deri.ie/">DERI Galway</a>, Ireland.</dd>
+
+<dt>Interests:</dt>
+<dd rel="foaf:topic_interest">
+  <span resource="[dbpedia:Linked_Data]">Linked Data</span>,
+  <span resource="[dbpedia:Resource_Description_Framework]">RDF</span>,
+  <span resource="[dbpedia:Data_integration]">data integration</span>,
+  <span resource="[dbpedia:Go_(game)]">Go</span>,
+  <span resource="[dbpedia:Photography]">photography,</span>
+  <span resource="[dbpedia:Hiking]">hiking,</span>
+  <span resource="[dbpedia:Table_football]">table football</span>
+</dd>
+
+<dt>Memberships:</dt>
+<dd>
+  <a href="http://deri.ie/about/team">DERI</a>,
+  <a href="http://esw.w3.org/SweoIG/TaskForces/CommunityProjects/LinkingOpenData">Linking Open Data project</a>,
+  <a href="http://pedantic-web.org/">Pedantic Web Group</a>,
+  <a href="http://webscience.org/people.html">Web Science Trust fellows</a>.
+</dd>
+
+<dt>Weblog:</dt>
+<dd><a rel="foaf:weblog" href="http://dowhatimean.net/">dowhatimean.net</a></dd>
+
+<dt>Email:</dt>
+<dd><a rel="foaf:mbox" href="mailto:richard@cyganiak.de">richard@cyganiak.de</a></dd>
+
+<dt>Skype:</dt>
+<dd property="ov:skypeID">richard.cyganiak</dd>
+
+<dt>Phone:</dt>
+<dd rel="foaf:phone" resource="tel:+353-872206327">+353-87-2206327</dd>
+
+<dt>IRC nick:</dt>
+<dd property="foaf:nick">cygri</dd>
+
+<dt>Home address:</dt>
+<dd rel="v:homeAdr">
+  <span typeof="v:Address">
+    <span property="v:street-address">26 Dun Aengus</span>, 
+    <span property="v:locality">Galway</span>,
+    <span property="v:country-name">Ireland</span>
+    (<a rel="foaf:page" href="http://maps.google.co.uk/maps/ms?ie=UTF8&amp;hl=en&amp;t=h&amp;msa=0&amp;msid=112557952290247281008.00046347109b8b677110e&amp;ll=53.26905,-9.051328&amp;spn=0.007366,0.016415&amp;z=16">Google Maps</a>)
+  </span>
+</dd>
+
+<dt>Work address:</dt>
+<dd rel="v:workAdr">
+  <span typeof="v:Address">
+    Office 102,
+    <span property="v:extended-address" datatype=""><a href="http://www.deri.ie/">Digital Enterprise Research Institute</a>, NUI Galway</span>,
+    <span property="v:street-address">Lower Dangan</span>,
+    <span property="v:locality">Galway</span>,
+    <span property="v:country-name">Ireland</span>
+    (<a rel="foaf:page" href="http://maps.google.co.uk/maps/ms?ie=UTF8&amp;hl=en&amp;t=h&amp;msa=0&amp;msid=112557952290247281008.00045d9f09460db317d5b&amp;ll=53.290065,-9.074053&amp;spn=0.003226,0.006512&amp;z=17">Google Maps</a>)
+  </span>
+</dd>
+
+<dt>URI:</dt>
+<dd><a rel="owl:sameAs" href="http://richard.cyganiak.de/foaf.rdf#cygri">http://richard.cyganiak.de/foaf.rdf#cygri</a></dd>
+</dl>
+
+<h2>Web properties</h2>
+
+<ul>
+<li><a rel="me foaf:weblog" href="http://dowhatimean.net/"><span property="rdfs:label">My weblog</span></a></li>
+<li><img src="/images/foaf.png" alt="" /> <a rel="me rdfs:seeAlso" href="http://richard.cyganiak.de/foaf.rdf"><span property="rdfs:label">My FOAF file</span></a></li>
+<li><a rel="me foaf:account" href="http://twitter.com/cygri"><span property="rdfs:label">Me in Twitter</span></a></li>
+<li><a rel="me foaf:account" href="http://flickr.com/photos/cygri"><span property="rdfs:label">Me in Flickr</span></a></li>
+<li><a rel="me foaf:account" href="http://www.facebook.com/people/Richard_Cyganiak/555777583"><span property="rdfs:label">Me in Facebook</span></a></li>
+<li><a rel="me foaf:account" href="http://www.linkedin.com/in/cygri"><span property="rdfs:label">Me in LinkedIn</span></a></li>
+<li><a rel="me foaf:account" href="http://delicious.com/cygri"><span property="rdfs:label">Me in delicious</span></a></li>
+<li><a rel="me foaf:account" href="http://www.dopplr.com/traveller/cygri"><span property="rdfs:label">Me in Dopplr</span></a></li>
+<li><a rel="me foaf:account" href="http://www.semanticoverflow.com/users/468/cygri"><span property="rdfs:label">Me in SemanticOverflow</span></a></li>
+<li><a rel="me foaf:account" href="http://www.last.fm/user/cygri"><span property="rdfs:label">Me in last.fm</span></a></li>
+<li><a rel="me foaf:account" href="http://www.slideshare.net/cygri"><span property="rdfs:label">Me in SlideShare</span></a></li>
+</ul>
+
+<h2>Current projects</h2>
+
+<dl rel="foaf:currentProject">
+
+<dt about="http://prefix.cc/about#prefix.cc"><a rel="foaf:homepage" property="foaf:name" href="http://prefix.cc/">prefix.cc</a></dt>
+<dd about="http://prefix.cc/about#prefix.cc" property="rdfs:comment" datatype="">A web site that simplifies a common task in the work of RDF developers: remembering and looking up URI prefixes.</dd>
+
+<dt about="http://pedantic-web.org/#pw"><a rel="foaf:homepage" property="foaf:name" href="http://pedantic-web.org/">Pedantic Web Group</a></dt>
+<dd about="http://pedantic-web.org/#pw" property="rdfs:comment" datatype="">I'm a co-founder of this group of people dedicated to fixing broken data on the Semantic Web.</dd>
+
+<dt about="#rdb2rdf"><a rel="foaf:homepage" property="foaf:name" href="http://www.w3.org/2001/sw/rdb2rdf/">RDB2RDF Working Group at W3C</a></dt>
+<dd about="#rdb2rdf" property="rdfs:comment" datatype="">I am a member of this W3C working group. It is chartered to create a specification for a language to map relational data and relational schemas to RDF and OWL.</dd>
+
+<dt about="#sigma"><a rel="foaf:homepage" property="foaf:name" href="http://sig.ma/">Sig.ma</a></dt>
+<dd about="#sigma" property="rdfs:comment" datatype="">An entity search engine and browser for the Web of Data. Built with Michele Catasta and Szymon Danielczyk in the <a href="http://www.okkam.org/">OKKAM Project</a>. Sig.ma won 3rd prize at the 2009 <a href="http://challenge.semanticweb.org/">Semantic Web Challenge</a>.</dd>
+
+<dt about="#any23"><a rel="foaf:homepage" property="foaf:name" href="http://developers.any23.org/">any23</a></dt>
+<dd about="#any23" property="rdfs:comment" datatype="">Anything To Triples (any23) is a library, <a href="http://any23.org/">web service</a> and command-line swiss army knife for parsing and converting RDF. The codebase is extracted from <a href="http://sindice.com/">Sindice</a> and maintained by <a href="http://deri.ie/">DERI</a> and <a href="http://wed.fbk.eu/">FBK's Web of Data Research Unit</a>.</dd>
+
+<dt about="#d2rq"><a rel="foaf:homepage" property="foaf:name" href="http://d2rq.org/">D2RQ and D2R Server</a></dt>
+<dd about="#d2rq" property="rdfs:comment" datatype="">An open-source project aimed at making relational databases part of the Web of Data. Originally founded by <a href="http://bizer.de/">Chris Bizer</a>. I have maintained D2RQ and D2R Server since 2005.</dd>
+
+<dt about="#neologism"><a rel="foaf:homepage" property="foaf:name" href="http://code.google.com/p/neologism/">Neologism</a></dt>
+<dd about="#neologism" property="rdfs:comment">An open-source publishing platform for RDFS vocabularies. Currently in Alpha stage. I founded this project in 2008.</dd>
+
+<dt about="#dbpedia"><a rel="foaf:homepage" property="foaf:name" href="http://dbpedia.org/">DBpedia</a></dt>
+<dd about="#dbpedia" property="rdfs:comment">Extracting structured RDF information from Wikipedia. A large community project involving several universities and companies. I have contributed to the original extraction framework and have developed and maintained DBpedia's HTML frontend during much of 2007 and 2008.</dd>
+
+<dt about="#lod"><a rel="foaf:homepage" property="foaf:name" href="http://esw.w3.org/topic/SweoIG/TaskForces/CommunityProjects/LinkingOpenData">Linking Open Data</a></dt>
+<dd about="#lod" property="rdfs:comment" datatype="">A community effort to convert existing sources of open data to RDF an make them part of the Semantic Web. I'm a co-founder of the project, together with <a href="http://bizer.de/">Chris Bizer</a>. My main contribution is in helping to establish best practices for publishing RDF on the Web, and maintaining the <a href="http://richard.cyganiak.de/2007/10/lod/">LOD dataset cloud</a> diagram.</dd>
+
+<dt about="#semantic-sitemaps"><a rel="foaf:homepage" property="foaf:name" href="http://sw.deri.org/2007/07/sitemapextension/">Semantic Sitemaps</a></dt>
+<dd about="#semantic-sitemaps" property="rdfs:comment" datatype="">A proposed standard for improving RDF discovery, originally designed by <a href="http://g1o.net/">Giovanni Tummarello</a>.</dd>
+
+<dt about="#void"><a rel="foaf:homepage" property="foaf:name" href="http://semanticweb.org/wiki/VoiD">voiD</a></dt>
+<dd about="#void" property="rdfs:comment">A work-in-progress RDFS vocabulary for describing the contents of RDF datasets.</dd>
+
+<dt about="#pubby"><a rel="foaf:homepage" property="foaf:name" href="http://www4.wiwiss.fu-berlin.de/pubby/">Pubby</a></dt>
+<dd about="#pubby" property="rdfs:comment">A Linked Data server that exposes RDF data from SPARQL endpoints. Originally developed for DBpedia.</dd>
+
+</dl>
+
+<h2>Past projects</h2>
+
+<dl rel="foaf:pastProject">
+<dt about="#sindice"><a rel="foaf:homepage" property="foaf:name" href="http://sindice.com/">Sindice.com</a></dt>
+<dd about="#sindice" property="rdfs:comment" datatype="">An experimental search engine for the Web of Data. The project is lead by <a href="http://g1o.net/">Giovanni Tummarello</a>. I was a member from 2007 to 2009.</dd>
+
+<dt about="#statcvs-statsvn"><a rel="foaf:homepage" property="foaf:name" href="http://statcvs.sourceforge.net/">StatCVS/StatSVN</a></dt>
+<dd about="#statcvs-statsvn" property="rdfs:comment">StatCVS generates colorful reports from CVS repository logs. I maintained the open-source project from 2002 to 2008. A port to Subversion, called StatSVN, was created by Jason Kealey and Benoit Xhenseval. They took over maintenance of StatCVS in 2008.</dd>
+
+<dt about="#disco"><a rel="foaf:homepage" property="foaf:name" href="http://www4.wiwiss.fu-berlin.de/bizer/ng4j/disco/">Disco</a></dt>
+<dd about="#disco" property="rdfs:comment">A simple RDF browser. Developed together with Tobias Gauß in 2006-2007.</dd>
+
+<dt about="#ng4j"><a rel="foaf:homepage" property="foaf:name" href="http://www4.wiwiss.fu-berlin.de/bizer/ng4j/">NG4J</a></dt>
+<dd about="#ng4j" property="rdfs:comment" datatype="">NG4J provided support for <a href="http://www.w3.org/2004/03/trix/">Named Graphs</a> long before this feature became standard in all RDF stores. The project was initiated by Chris Bizer in 2004, and I maintained it from 2004 to 2007.</dd>
+
+<dt about="#sparql2sql"><a rel="foaf:homepage" property="foaf:name" href="http://jena.sourceforge.net/sparql2sql/">SPARQL2SQL</a></dt>
+<dd about="#sparql2sql" property="rdfs:comment" datatype="">An early attempt at implementing expressive SPARQL queries over a database-backed triple store. I did this as an internship project at HP Labs Bristol in 2005 under the supervision of Andy Seaborne.</dd>
+
+<dt about="#wiqa"><a rel="foaf:homepage" property="foaf:name" href="http://www4.wiwiss.fu-berlin.de/bizer/WIQA/index.htm">WIQA</a></dt>
+<dd about="#wiqa" property="rdfs:comment" datatype="">A policy framework for Web Information Quality Assurance, part of <a href="http://bizer.de/">Chris Bizer</a>'s doctoral thesis. I did parts of the implementation (2005-2006).</dd>
+
+<dt>Miscellaneous</dt>
+<dd>
+  <ul>
+    <li about="#accept-header-test">(03/2008) <a rel="foaf:homepage" property="foaf:name" href="http://dowhatimean.net/2008/03/what-is-your-rdf-browsers-accept-header">Accept header test for RDF clients</a>: <span property="rdfs:comment">Small utility service to help implementers of content negotiation</span></li>
+    <li about="#foaf-geolocator">(03/2006) <a rel="foaf:homepage" property="foaf:name" href="http://dowhatimean.net/2006/03/adding-geo-cordinates-to-your-foaf-file">FOAF geolocator</a>: <span property="rdfs:comment">Add geographic coordinates to your FOAF file</span></li>
+    <li><a rel="rdfs:seeAlso" href="2008/12/old-stuff.html#projekte">Some very old projects</a>. Page in German.</li>
+  </ul>
+</dd>
+</dl>
+
+<h2>Publications</h2>
+
+<p>I occasionally blog at <a href="http://dowhatimean.net/">dowhatimean.net</a>.</p>
+
+<p>There is a <a href="2008/12/old-stuff.html#dokumente">list of my very old publications</a> (page in German). Once upon a time, I did some blogging in German <a href="/blog/">here</a>.</p>
+
+<h3>Specifications and Tutorials</h3>
+
+<dl rev="dc:creator">
+<dt>
+  <a href="http://rdfs.org/ns/void-guide"><span property="dc:title">voiD Guide – Using the Vocabulary of Interlinked Datasets</span></a>
+</dt>
+<dd>
+  Keith Alexander, Richard Cyganiak, Michael Hausenblas, Jun Zhao. Specification, 2009.
+</dd>
+
+<dt>
+  <a href="http://videolectures.net/iswc08_heath_hpldw/"><span property="dc:title">How to Publish Linked Data on the Web</span></a> (Video, ISWC 2008)
+</dt>
+<dd>
+  Tom Heath, Michael Hausenblas, Christian Bizer, Richard Cyganiak, Olaf Hartig. 
+  Tutorial at ISWC 2008, Karlsruhe. 
+  Published at videolectures.net.
+</dd>
+
+<dt>
+  <a href="http://sw.deri.org/2008/07/n-quads/"><span property="dc:title">N-Quads: Extending N-Triples with Context</span></a>
+</dt>
+<dd>
+  Richard Cyganiak, Andreas Harth, Aidan Hogan. Specification, 2008.
+</dd>
+
+<dt>
+  <a href="http://www.w3.org/TR/cooluris/"><span property="dc:title">Cool URIs for the Semantic Web</span></a>
+</dt>
+<dd>
+  Leo Sauermann, Richard Cyganiak, Danny Ayers, Max Völkel. 
+  W3C Interest Group Note, 2008.
+</dd>
+
+<dt>
+  <a href="http://sw.deri.org/2007/07/sitemapextension/"><span property="dc:title">Semantic Sitemaps: A Sitemap Extension</span></a>
+</dt>
+<dd>
+  Richard Cyganiak, Renaud Delbru, Giovanni Tummarello. Specification, 2007.
+</dd>
+
+<dt>
+  <a href="http://www4.wiwiss.fu-berlin.de/bizer/pub/LinkedDataTutorial/"><span property="dc:title">How to Publish Linked Data on the Web</span></a>
+</dt>
+<dd>
+  Christian Bizer, Richard Cyganiak, Tom Heath. 
+  Tutorial, 2007.
+</dd>
+
+<dt>
+  <a href="http://dowhatimean.net/2007/02/debugging-semantic-web-sites-with-curl"><span property="dc:title">Debugging Semantic Web sites with cURL</span></a>
+</dt>
+<dd>
+  Tutorial, 2007.
+</dd>
+
+<dt>
+  <a href="http://www4.wiwiss.fu-berlin.de/bizer/TriG/"><span property="dc:title">The TriG Syntax</span></a>
+</dt>
+<dd>
+  Chris Bizer, Richard Cyganiak. Specification, 2007.
+</dd>
+
+</dl>
+
+<h3>Peer-reviewed and tech reports</h3>
+
+<dl class="academic-publications" rev="dc:creator">
+  
+  <dt>
+    Sig.ma: live views on the Web of Data
+    (JWS, 2010)
+  </dt>
+  <dd typeof="swrc:Article">
+    <span rel="swrc:author" resource="[_:giovanni_tummarello]"><span property="foaf:name">Giovanni Tummarello</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:michele_catasta]"><span property="foaf:name">Michele Catasta</span></span>,
+    <span rel="swrc:author" resource="[_:szymon_danielczyk]"><span property="foaf:name">Szymon Danielczyk</span></span>,
+    <span rel="swrc:author" resource="[_:renaud_delbru]"><span property="foaf:name">Renaud Delbru</span></span>,
+    <span rel="swrc:author" resource="[_:stefan_decker]"><span property="foaf:name">Stefan Decker</span></span>:
+    <span property="dc:title">Sig.ma: live views on the Web of Data</span>.
+    <span property="swrc:journal">Journal of Web Semantics: Science, Services and Agents on the World Wide Web</span>,
+    Article in Press,
+<!--    Volume 7, Issue 1, Pages 1-10,-->
+<!--    <span property="swrc:month">January</span> --><span property="swrc:year">2010</span>.
+    (<a rel="swrc:url" href="http://dx.doi.org/10.1016/j.websem.2010.08.003">doi:10.1016/j.websem.2010.08.003</a><!--,
+    <a rel="swrc:url" href="/2008/papers/sigma-jws2010.pdf">PDF</a>-->)
+  </dd>
+
+  <dt>
+    Next steps for RDF: Keep the core and pave the cowpaths (W3C Workshop: RDF Next Steps)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>:
+    <span property="dc:title">Next steps for RDF: Keep the core and pave the cowpaths</span>.
+    In: Proceedings of the <span property="ov:presentedAt">W3C Workshop on RDF Next Steps, Standord, CA</span>,
+    <span property="swrc:month">June</span> <span property="swrc:year">2010</span>. (<a rel="swrc:url" href="http://www.w3.org/2009/12/rdf-ws/papers/ws30">Link</a>)
+  </dd>
+
+  <dt>
+    Learning from Linked Open Data Usage: Patterns &amp; Metrics
+    (WebSci2010)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:knud_moeller]"><span property="foaf:name">Knud Möller</span></span>,
+    <span rel="swrc:author" resource="[_:michael_hausenblas]"><span property="foaf:name">Michael Hausenblas</span></span>, 
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:siegfried_handschuh]"><span property="foaf:name">Siegfried Handschuh</span></span>,
+    <span rel="swrc:author" resource="[_:gunnar_grimnes]"><span property="foaf:name">Gunnar Grimnes</span></span>:
+    <span property="dc:title">Learning from Linked Open Data Usage: Patterns &amp; Metrics</span>.
+    In: Proceedings of the <span property="ov:presentedAt">Web Science Conference 2010, Raleigh, NC</span>,
+    <span property="swrc:month">April</span> <span property="swrc:year">2010</span>.
+    (<a rel="swrc:url" href="/2008/papers/lod-usage-websci2010.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Semantic Statistics: Bringing Together SDMX and SCOVO
+    (LDOW2010)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:simon_field]"><span property="foaf:name">Simon Field</span></span>,
+    <span rel="swrc:author" resource="[_:arofan_gregory]"><span property="foaf:name">Arofan Gregory</span></span>,
+    <span rel="swrc:author" resource="[_:wolfgang_halb]"><span property="foaf:name">Wolfgang Halb</span></span>,
+    <span rel="swrc:author" resource="[_:jeni_tennison]"><span property="foaf:name">Jeni Tennison</span></span>:
+    <span property="dc:title">Semantic Statistics: Bringing Together SDMX and SCOVO</span>.
+    In: Proceedings of the <span property="ov:presentedAt">Linked Data on the Web Workshop (LDOW2010), Raleigh, NC</span>,
+    <span property="swrc:month">April</span> <span property="swrc:year">2010</span>.
+    (<a rel="swrc:url" href="/2008/papers/sdmx-ldow2010.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Sig.ma: Live views on the Web of Data
+    (demo at WWW2010)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:giovanni_tummarello]"><span property="foaf:name">Giovanni Tummarello</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:michele_catasta]"><span property="foaf:name">Michele Catasta</span></span>,
+    <span rel="swrc:author" resource="[_:szymon_danielczyk]"><span property="foaf:name">Szymon Danielczyk</span></span>,
+    <span rel="swrc:author" resource="[_:renaud_delbru]"><span property="foaf:name">Renaud Delbru</span></span>,
+    <span rel="swrc:author" resource="[_:stefan_decker]"><span property="foaf:name">Stefan Decker</span></span>:
+    <span property="dc:title">Sig.ma: live views on the Web of Data</span>.
+    Demonstration at <span property="ov:presentedAt">19th World Wide Web Conference (WWW2010), Raleigh, NC</span>,
+    <span property="swrc:month">April</span> <span property="swrc:year">2010</span>.
+    (<a rel="swrc:url" href="/2008/papers/sigma-demo-www2010.pdf">PDF</a>)
+  </dd>
+</dl>
+
+<h4>2009</h4>
+
+<dl class="academic-publications" rev="dc:creator">
+  <dt>
+    On Integration Issues of Site-Specific APIs into the Web of Data
+    (Technical Report, 2009)
+  </dt>
+  <dd typeof="swrc:TechnicalReport">
+    <span rel="swrc:author" resource="[_:tim_berners-lee]"><span property="foaf:name">Tim Berners-Lee</span></span>, 
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>, 
+    <span rel="swrc:author" resource="[_:michael_hausenblas]"><span property="foaf:name">Michael Hausenblas</span></span>, 
+    <span rel="swrc:author" resource="[_:joe_presbrey]"><span property="foaf:name">Joe Presbrey</span></span>, 
+    <span rel="swrc:author" resource="[_:oshani_seneviratne]"><span property="foaf:name">Oshani Seneviratne</span></span>, 
+    <span rel="swrc:author" resource="[_:oana_ureche]"><span property="foaf:name">Oana-Elena Ureche</span></span>: 
+    <a property="dc:title">On Integration Issues of Site-Specific APIs into the Web of Data</a>.
+    Technical Report,
+    <span rel="swrc:institution" resource="#lidrc"><span property="foaf:name">LiDRC</span>, DERI, NUI Galway, Ireland</span>,
+    <span property="swrc:month">October</span> <span property="swrc:year">2009</span>.
+    (<a rel="swrc:url" href="/2008/papers/rwwod-tr-deri2009.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Sig.ma: Live views on the Web of Data
+    (SemWebChallenge 2009)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:giovanni_tummarello]"><span property="foaf:name">Giovanni Tummarello</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:michele_catasta]"><span property="foaf:name">Michele Catasta</span></span>,
+    <span rel="swrc:author" resource="[_:szymon_danielczyk]"><span property="foaf:name">Szymon Danielczyk</span></span>,
+    <span rel="swrc:author" resource="[_:stefan_decker]"><span property="foaf:name">Stefan Decker</span></span>:
+    <span property="dc:title">Sig.ma: live views on the Web of Data</span>.
+    3rd prize at the <span property="ov:presentedAt">Semantic Web Challenge at ISWC2009, Washington, DC</span>,
+    <span property="swrc:month">October</span> <span property="swrc:year">2009</span>.
+    (<a rel="swrc:url" href="/2008/papers/sigma-semwebchallenge2009.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Accessing Site-Speciﬁc APIs Through Write-Wrappers From The Web of Data
+    (SemRUs-ISWC09)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:oana_ureche]"><span property="foaf:name">Oana-Elena Ureche</span></span>,
+    <span rel="swrc:author" resource="[_:aftab_iqbal]"><span property="foaf:name">Aftab Iqbal</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:michael_hausenblas]"><span property="foaf:name">Michael Hausenblas</span></span>:
+    <span property="dc:title">Accessing Site-Speciﬁc APIs Through Write-Wrappers From The Web of Data</span>.
+    In: Proceedings of the <span property="ov:presentedAt">Semantics for the Rest of Us Workshop (SemRUs-ISWC09), Washington, DC</span>,
+    <span property="swrc:month">October</span> <span property="swrc:year">2009</span>.
+    (<a rel="swrc:url" href="http://CEUR-WS.org/Vol-521/paper1.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Towards ECSSE: live Web of Data search and integration
+    (SemSearch2009)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:michele_catasta]"><span property="foaf:name">Michele Catasta</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:giovanni_tummarello]"><span property="foaf:name">Giovanni Tummarello</span></span>:
+    <span property="dc:title">Towards ECSSE: live Web of Data search and integration</span>.
+    <span property="ov:presentedAt">Semantic Search 2009 Workshop (SemSearch2009), Madrid, Spain</span>,
+    <span property="swrc:month">April</span> <span property="swrc:year">2009</span>.
+    (<a rel="swrc:url" href="/2008/papers/ecsse-semsearch2009.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Describing Linked Datasets
+    (LDOW2009)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:keith_alexander]"><span property="foaf:name">Keith Alexander</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:michael_hausenblas]"><span property="foaf:name">Michael Hausenblas</span></span>,
+    <span rel="swrc:author" resource="[_:jun_zhao]"><span property="foaf:name">Jun Zhao</span></span>:
+    <span property="dc:title">Describing Linked Datasets</span>.
+    In: Proceedings of the <span property="ov:presentedAt">Linked Data on the Web Workshop (LDOW2009), Madrid, Spain</span>,
+    <span property="swrc:month">April</span> <span property="swrc:year">2009</span>.
+    (<a rel="swrc:url" href="/2008/papers/void-ldow2009.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Semantic Web Publishing with Drupal
+    (Technical Report, 2009)
+  </dt>
+  <dd typeof="swrc:TechnicalReport">
+    <span rel="swrc:author" resource="[_:stephane_corlosquet]"><span property="foaf:name">Stéphane Corlosquet</span></span>, 
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>, 
+    <span rel="swrc:author" resource="[_:axel_polleres]"><span property="foaf:name">Axel Polleres</span></span>, 
+    <span rel="swrc:author" resource="[_:stefan_decker]"><span property="foaf:name">Stefan Decker</span></span>: 
+    <a property="dc:title">Semantic Web Publishing with Drupal</a>.
+    DERI Technical Report <span property="swrc:number">2009-04-30</span>,
+    <span rel="swrc:institution" resource="[_:deri]"><span property="foaf:name">DERI, NUI Galway</span>, Ireland</span>,
+    <span property="swrc:month">April</span> <span property="swrc:year">2009</span>.
+    (<a rel="swrc:url" href="http://www.deri.ie/fileadmin/documents/DERI-TR-2009-04-30.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    DBpedia – A Crystallization Point for the Web of Data
+    (JWS, 2009)
+  </dt>
+  <dd typeof="swrc:Article">
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>, 
+    <span rel="swrc:author" resource="[_:jens_lehmann]"><span property="foaf:name">Jens Lehmann</span></span>, 
+    <span rel="swrc:author" resource="[_:georgi_kobilarov]"><span property="foaf:name">Georgi Kobilarov</span></span>, 
+    <span rel="swrc:author" resource="[_:soren_auer]"><span property="foaf:name">Sören Auer</span></span>, 
+    <span rel="swrc:author" resource="[_:christan_becker]"><span property="foaf:name">Christian Becker</span></span>, 
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>, 
+    <span rel="swrc:author" resource="[_:sebastian_hellmann]"><span property="foaf:name">Sebastian Hellmann</span></span>, 
+    <span property="dc:title">DBpedia – A Crystallization Point for the Web of Data</span>.
+    <span property="swrc:journal">Journal of Web Semantics: Science, Services and Agents on the World Wide Web</span>,
+    <span property="swrc:year">2009</span>.
+    (<a rel="swrc:url" href="http://dx.doi.org/10.1016/j.websem.2009.07.002">doi:10.1016/j.websem.2009.07.002</a>)
+  </dd>
+
+  <dt>
+    Quality-Driven Information Filtering Using the WIQA Policy Framework
+    (JWS, 2009)
+  </dt>
+  <dd typeof="swrc:Article">
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>, 
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>, 
+    <span property="dc:title">Quality-Driven Information Filtering Using the WIQA Policy Framework</span>.
+    <span property="swrc:journal">Journal of Web Semantics: Science, Services and Agents on the World Wide Web</span>,
+    Volume 7, Issue 1, Pages 1-10,
+    <span property="swrc:month">January</span> <span property="swrc:year">2009</span>.
+    (<a rel="swrc:url" href="http://dx.doi.org/10.1016/j.websem.2008.02.005">doi:10.1016/j.websem.2008.02.005</a>,
+    <a rel="swrc:url" href="/2008/papers/wiqa-jws2009.pdf">PDF</a>)
+  </dd>
+</dl>
+
+<h4>2008</h4>
+
+<dl class="academic-publications" rev="dc:creator">
+  <dt>
+    Neologism – Easy Vocabulary Publishing
+    (SFSW2008)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:cosmin_basca]"><span property="foaf:name">Cosmin Basca</span></span>,
+    <span rel="swrc:author" resource="[_:stephane_corlosquet]"><span property="foaf:name">Stéphane Corlosquet</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:sergio_fernandez]"><span property="foaf:name">Sergio Fernández</span></span>,
+    <span rel="swrc:author" resource="[_:thomas_schandl]"><span property="foaf:name">Thomas Schandl</span></span>:
+    <span property="dc:title">Neologism – Easy Vocabulary Publishing</span>.
+    <span property="ov:presentedAt">4th Workshop on Scripting for the Semantic Web, Tenerife, Spain</span>,
+    <span property="swrc:month">June</span> <span property="swrc:year">2008</span>.
+    (<a rel="swrc:url" href="/2008/papers/neologism-sfsw2008.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Semantic Sitemaps – Efficient and Flexible Access to Datasets on the Semantic Web
+    (ESWC2008)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:holger_stenzhorn]"><span property="foaf:name">Holger Stenzhorn</span></span>,
+    <span rel="swrc:author" resource="[_:renaud_delbru]"><span property="foaf:name">Renaud Delbru</span></span>,
+    <span rel="swrc:author" resource="[_:stefan_decker]"><span property="foaf:name">Stefan Decker</span></span>,
+    <span rel="swrc:author" resource="[_:giovanni_tummarello]"><span property="foaf:name">Giovanni Tummarello</span></span>:
+    <span property="dc:title">Semantic Sitemaps – Efficient and Flexible Access to Datasets on the Semantic Web</span>.
+    <span property="ov:presentedAt">5th European Semantic Web Conference, Tenerife, Spain</span>,
+    <span property="swrc:month">June</span> <span property="swrc:year">2008</span>.
+    (<a rel="swrc:url" href="/2008/papers/sitemaps-eswc2008.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Browsing Linked Data with Fenfire
+    (Demo at LDOW2008)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:tuukka_hastrup]"><span property="foaf:name">Tuukka Hastrup</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:uldis_bojars]"><span property="foaf:name">Uldis Bojārs</span></span>:
+    <span property="dc:title">Browsing Linked Data with Fenﬁre (Demo)</span>.
+    <span property="ov:presentedAt">Workshop on Linked Data on the Web (LDOW2008), Beijing, China</span>,
+    <span property="swrc:month">April</span> <span property="swrc:year">2008</span>.
+    (<a rel="swrc:url" href="/2008/papers/fenfire-ldow2008.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Weaving SIOC into the Web of Linked Data
+    (LDOW2008)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:uldis_bojars]"><span property="foaf:name">Uldis Bojārs</span></span>,
+    <span rel="swrc:author" resource="[_:alexandre_passant]"><span property="foaf:name">Alexandre Passant</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:john_breslin]"><span property="foaf:name">John Breslin</span></span>:
+    <span property="dc:title">Weaving SIOC into the Web of Linked Data</span>.
+    <span property="ov:presentedAt">Workshop on Linked Data on the Web (LDOW2008), Beijing, China</span>,
+    <span property="swrc:month">April</span> <span property="swrc:year">2008</span>.
+    (<a rel="swrc:url" href="/2008/papers/sioc-ldow2008.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    Sindice.com – A Document-oriented Lookup Index for Open Linked Data
+    (IJMSO, 2008)
+  </dt>
+  <dd typeof="swrc:Article">
+    <span rel="swrc:author" resource="[_:eyal_oren]"><span property="foaf:name">Eyal Oren</span></span>,
+    <span rel="swrc:author" resource="[_:renaud_delbru]"><span property="foaf:name">Renaud Delbru</span></span>,
+    <span rel="swrc:author" resource="[_:michele_catasta]"><span property="foaf:name">Michele Catasta</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span> 
+    <span rel="swrc:author" resource="[_:holger_stenzhorn]"><span property="foaf:name">Holger Stenzhorn</span></span>,
+    <span rel="swrc:author" resource="[_:giovanni_tummarello]"><span property="foaf:name">Giovanni Tummarello</span></span>:
+    <span property="dc:title">Sindice.com – A Document-oriented Lookup Index for Open Linked Data</span>.
+    <span property="swrc:journal">International Journal of Metadata, Semantics and Ontologies, 3 (1)</span>, 
+    <span property="swrc:year">2008</span>.
+    (<a rel="swrc:url" href="/2008/papers/sindice-ijmso2008.pdf">PDF</a>)
+  </dd>
+</dl>
+
+<h4>2007</h4>
+
+<dl class="academic-publications" rev="dc:creator">
+  <dt>
+    DBpedia – A Nucleus for a Web of Open Data
+    (ISWC2007)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:soren_auer]"><span property="foaf:name">Sören Auer</span></span>,
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>,
+    <span rel="swrc:author" resource="[_:georgi_kobilarov]"><span property="foaf:name">Georgi Kobilarov</span></span>,
+    <span rel="swrc:author" resource="[_:jens_lehmann]"><span property="foaf:name">Jens Lehmann</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:zachary_ives]"><span property="foaf:name">Zachary Ives</span></span>:
+    <span property="dc:title">DBpedia – A Nucleus for a Web of Open Data</span>.
+    <span property="ov:presentedAt">6th International Semantic Web Conference (ISWC 2007), Busan, Korea</span>,
+    <span property="swrc:month">November</span> <span property="swrc:year">2007</span>.
+    (<a rel="swrc:url" href="/2008/papers/dbpedia-iswc2007.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    D2RQ – Lessons Learned
+    (W3C RdfRDB 2007)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:chrisitan_bizer]"><span property="foaf:name">Chrisitan Bizer</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>:
+    <a property="dc:title" rel="swrc:url" href="http://www.w3.org/2007/03/RdfRDB/papers/d2rq-positionpaper/">D2RQ – Lessons Learned</a>.
+    <span property="ov:presentedAt">W3C Workshop on RDF Access to Relational Databases, Boston, USA</span>,
+    <span property="swrc:month">October</span> <span property="swrc:year">2007</span>
+  </dd>
+
+  <dt>
+    DBpedia – A Nucleus for a Web of Open Data
+    (Poster at CSSW2007)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>:
+    <span property="dc:title">DBpedia – A Nucleus for a Web of Open Data (Poster)</span>.
+    <span property="ov:presentedAt">SABRE Conference on Social Semantic Web (CSSW 2007), Leipzig, Germany</span>,
+    <span property="swrc:month">September</span> <span property="swrc:year">2007</span>.
+    (<a href="/2008/posters/dbpedia-cssw2007.pdf">Poster</a>)
+  </dd>
+
+  <dt>
+    RDF Book Mashup – From Web APIs to a Web of Data
+    (SFSW2007)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:tobias_gauss]"><span property="foaf:name">Tobias Gauß</span></span>:
+    <span property="dc:title">The RDF Book Mashup – From Web APIs to a Web of Data</span>.
+    <span property="ov:presentedAt">3rd Workshop on Scripting for the Semantic Web (SFSW2007), Innsbruck, Austria</span>,
+    <span property="swrc:month">June</span> <span property="swrc:year">2007</span>
+    (<a rel="swrc:url" href="/2008/papers/bookmashup-sfsw2007.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    DBpedia – Querying Wikipedia like a Database
+    (Dev Track at WWW2007)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>,
+    <span rel="swrc:author" resource="[_:soren_auer]"><span property="foaf:name">Sören Auer</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:georgi_kobilarov]"><span property="foaf:name">Georgi Kobilarov</span></span>:
+    <span property="dc:title">DBpedia – Querying Wikipedia like a Database</span>.
+    <span property="ov:presentedAt">16th International World Wide Web Conference (WWW2007), Banff, Canada</span>,
+    <span property="swrc:month">May</span> <span property="swrc:year">2007</span>.
+  </dd>
+
+  <dt>
+    Cool URIs for the Semantic Web
+    (Technical Report, 2007)
+  </dt>
+  <dd typeof="swrc:TechnicalReport">
+    <span rel="swrc:author" resource="[_:leo_sauermann]"><span property="foaf:name">Leo Sauermann</span></span>, 
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>, 
+    <span rel="swrc:author" resource="[_:max_voelkel]"><span property="foaf:name">Max Völkel</span></span>: 
+    <a property="dc:title">Cool URIs for the Semantic Web</a>.
+    DFKI Technical Memo <span property="swrc:number">TM-07-01</span>,
+    <span rel="swrc:institution" resource="[_:dfki]"><span property="foaf:name">DFKI GmbH</span>, Germany</span>,
+    <span property="swrc:month">February</span> <span property="swrc:year">2007</span>.
+    (<a rel="swrc:url" href="http://www.dfki.uni-kl.de/dfkidok/publications/TM/07/01/tm-07-01.pdf">PDF</a>)
+  </dd>
+
+</dl>
+
+<h4>2006</h4>
+
+<dl class="academic-publications" rev="dc:creator">
+  <dt>
+    D2R Server – A Semantic Web Front-end to Existing Relational Databases
+    (Poster at BXMLT2006)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>:
+    <span property="dc:title">D2R Server – A Semantic Web Front-end to Existing Relational Databases (Poster)</span>.
+    <span property="ov:presentedAt">Berliner XML Tage, Berlin, Germany</span>,
+    <span property="swrc:month">September</span> <span property="swrc:year">2006</span>.
+    (<a rel="swrc:url" href="/2008/papers/d2r-server-bxmlt2006.pdf">PDF</a>)
+    (<a href="/2008/posters/d2r-server-bxmlt2006.pdf">Poster</a>)
+  </dd>
+
+  <dt>
+    DODA 0.1 – An Ontology for Lightweight Integration of Semantic Data Access Technologies
+    (SIIK2006)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:giovanni_tummarello]"><span property="foaf:name">Giovanni Tummarello</span></span>,
+    <span rel="swrc:author" resource="[_:christian_morbidoni]"><span property="foaf:name">Christian Morbidoni</span></span>,
+    <span rel="swrc:author" resource="[_:michele_nucci]"><span property="foaf:name">Michele Nucci</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>:
+    <span property="dc:title">DODA 0.1 – An Ontology for Lightweight Integration of Semantic Data Access Technologies</span>.
+    <span property="ov:presentedAt">1st International Workshop on Semantic Information Integration on Knowledge Discovery (SIIK 2006), Yogyakarta, Indonesia</span>,
+    <span property="swrc:month">December</span> <span property="swrc:year">2006</span>.
+    (<a rel="swrc:url" href="/2008/papers/doda-siik2006.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    The DODA Ontology – Lightweight Integration of Semantic Data Access Technologies
+    (SWAP2006)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:christian_morbidoni]"><span property="foaf:name">Christian Morbidoni</span></span>,
+    <span rel="swrc:author" resource="[_:giovanni_tummarello]"><span property="foaf:name">Giovanni Tummarello</span></span>,
+    <span rel="swrc:author" resource="[_:michele_nucci]"><span property="foaf:name">Michele Nucci</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>:
+    <span property="dc:title">The DODA Ontology – Lightweight Integration of Semantic Data Access Technologies</span>.
+    <span property="ov:presentedAt">3rd Italian Semantic Web Workshop (SWAP 2006), Pisa, Italy</span>,
+    <span property="swrc:month">December</span> <span property="swrc:year">2006</span>.
+    (<a rel="swrc:url" href="/2008/papers/doda-swap2006.pdf">PDF</a>)
+  </dd>
+
+  <dt>
+    D2R Server – Publishing Releational Databases on the Semantic Web
+    (Poster at ISWC2006)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>:
+    <span property="dc:title">D2R Server – Publishing Releational Databases on the Semantic Web (Poster)</span>.
+    <span property="ov:presentedAt">5th International Semantic Web Conference, Athens, USA</span>,
+    <span property="swrc:month">November</span> <span property="swrc:year">2006</span>.
+    (<a rel="swrc:url" href="/2008/papers/d2r-server-iswc2006.pdf">PDF</a>)
+    (<a href="/2008/posters/d2r-server-iswc2006.pdf">Poster</a>)
+  </dd>
+
+  <dt>
+    D2R Server – Publishing Relational Databases on the Web as SPARQL Endpoints
+    (Dev Track at WWW2006)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>:
+    <span property="dc:title">D2R Server – Publishing Relational Databases on the Web as SPARQL Endpoints</span>.
+    <span property="ov:presentedAt">15th International World Wide Web Conference (WWW2006), Edinburgh, Scotland</span>,
+    <span property="swrc:month">May</span> <span property="swrc:year">2006</span>.
+  </dd>
+</dl>
+
+<h4>2005</h4>
+
+<dl class="academic-publications" rev="dc:creator">
+  <dt>
+    The TriQL.P Browser – Filtering Information using Context-, Content- and Rating-Based Trust Policies
+    (SWPW2005)
+  </dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:tobias_gauss]"><span property="foaf:name">Tobias Gauß</span></span>,
+    <span rel="swrc:author" resource="[_:and_oliver_maresch]"><span property="foaf:name">and Oliver Maresch</span></span>:
+    <span property="dc:title">The TriQL.P Browser – Filtering Information using Context-, Content- and Rating-Based Trust Policies</span>.
+    <span property="ov:presentedAt">Semantic Web and Policy Workshop at the 4th International Semantic Web Conference, Galway, Ireland</span>,
+    <span property="swrc:month">November</span> <span property="swrc:year">2005</span>.
+    (<a rel="swrc:url" href="/2008/papers/triqlp-swpw2005.pdf">PDF</a>)
+  </dd>
+
+  <dt>NG4J – Named Graphs API for Jena
+    (Poster, ESWC2005)</dt>
+  <dd typeof="swrc:InProceedings">
+    <span rel="swrc:author" resource="[_:christian_bizer]"><span property="foaf:name">Christian Bizer</span></span>,
+    <span rel="swrc:author" resource="#me"><span property="foaf:name">Richard Cyganiak</span></span>,
+    <span rel="swrc:author" resource="[_:rowland_watkins]"><span property="foaf:name">Rowland Watkins</span></span>:
+    <span property="dc:title">NG4J – Named Graphs API for Jena (Poster)</span>.
+    <span property="ov:presentedAt">2nd European Semantic Web Conference (ESWC 2005), Heraklion, Greece</span>,
+    <span property="swrc:month">May</span> <span property="swrc:year">2005</span>.
+    (<a rel="swrc:url" href="/2008/papers/ng4j-eswc2005.pdf">PDF</a>)
+    (<a href="/2008/posters/ng4j-eswc2005.pdf">Poster</a>)
+  </dd>
+</dl>
+
+
+<h2>Talks and slides</h2>
+
+<p>Some day I will upload all my presentations to <a href="http://www.slideshare.net/cygri">my SlideShare account</a>. For now, just some notes.</p>
+
+<ul>
+<li>See publication list above</li>
+<li>Linked Data in 7 Easy Steps, Tutorial, ISWC2008</li>
+<li>Using the Web of Data, WOD-PD 2008</li>
+<li>There's more than US-ASCII, lightning talk at ESWC2008</li>
+<li>Sindice.com, lightning talk at LOD Gathering, ESWC2008</li>
+<li>Sindice.com, Linked Data Planet, 2008</li>
+<li>Web of Data, XTech 2008</li>
+<li>Linking Open Data, New York Semantic Web Meetup, 2008</li>
+<li>D2RQ, W3C RDF2RDB XG, 2008</li>
+<li>Semantics and Complexity of SPARQL, DERI Reading Group, 2007</li>
+<li>D2R Server, JUC 2006</li>
+<li>D2RQ, HP Labs, 2005</li>
+</ul>
+
+
+<h2>Posters</h2>
+
+<p>All of these are made with <a href="http://www.omnigroup.com/applications/OmniGraffle/">OmniGraffle</a>. On some, I have contributed not as an author but only by creating the poster itself.</p>
+
+<p class="posters">
+<a href="/2008/posters/sigma-semwebchallenge2009.pdf"><img src="/2008/posters/sigma-semwebchallenge2009.png" title="Sig.ma – Live Views on the Web of Data (Semantic Web Challenge 2009)" alt="Poster thumbnail" /></a>
+<a href="/2008/posters/dbpedia-cssw2007.pdf"><img src="/2008/posters/dbpedia-cssw2007.png" title="DBpedia – A Nucleus for the Web of Open Data (CSSW2007)" alt="Poster thumbnail" /></a>
+<a href="/2008/posters/lod-eswc2007.pdf"><img src="/2008/posters/lod-eswc2007.png" title="Linking Open Data (ESWC2007)" alt="Poster thumbnail" /></a>
+<a href="/2008/posters/d2r-server-bxmlt2006.pdf"><img src="/2008/posters/d2r-server-bxmlt2006.png" title="D2R Server – A Semantic Web Front-end to Existing Relational Databases (BXMLT2006)" alt="Poster thumbnail" /></a>
+<a href="/2008/posters/d2r-server-iswc2006.pdf"><img src="/2008/posters/d2r-server-iswc2006.png" title="D2R Server – Publishing Relational Databases on the Web (ISWC2006)" alt="Poster thumbnail" /></a>
+<a href="/2008/posters/ng4j-eswc2005.pdf"><img src="/2008/posters/ng4j-eswc2005.png" title="NG4J – Named Graphs API for Jena (ESWC2005)" alt="Poster thumbnail" /></a>
+<a href="/2008/posters/d2rq-iswc2004.pdf"><img src="/2008/posters/d2rq-iswc2004.png" title="D2RQ – Treating Non-RDF Databases as Virtual RDF Graphs (ISWC2004)" alt="Poster thumbnail" /></a>
+</p>
+
+
+<h2>Event organizer</h2>
+
+<ul rel="swc:holdsRole">
+  <li typeof="swc:Chair">Industry track chair, <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://i-semantics.tugraz.at/">I-Semantics 2010</a></span></li>
+  <li typeof="swc:Chair">Metadata chair, <span rel="swc:isRoleAt" resource="http://data.semanticweb.org/conference/iswc/2009"><a property="rdfs:label" rel="foaf:homepage" href="http://iswc2009.semanticweb.org/">International Semantic Web Conference 2009</a> (ISWC2009)</span></li>
+  <li typeof="swc:Chair">Co-organizer, <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://vocamp.org/wiki/VoCampOxford2008">VoCamp Oxford 2008</a></span></li>
+  <li typeof="swc:WorkshopOrganiser">Co-organizer, <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://vocamp.org/wiki/VoCampGalway2008">VoCamp Galway 2008</a></span></li>
+  <li typeof="swc:Chair">Metadata chair, <span rel="swc:isRoleAt" resource="http://data.semanticweb.org/conference/iswc/2008"><a property="rdfs:label" rel="foaf:homepage" href="http://iswc2008.semanticweb.org/">International Semantic Web Conference 2008</a> (ISWC2008)</span></li>
+  <li typeof="swc:Chair">Co-organizer, <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.semanticdesktop.org/xwiki/bin/view/Wiki/SemDeskHandsOn2007April">Semantic Desktop Hands-on Workshop 2007</a></span></li>
+</ul>
+
+
+<h2>PC memberships etc.</h2>
+
+<ul rel="swc:holdsRole">
+<li typeof="swc:ProgrammeCommitteeMember">Challenge: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://triplify.org/Challenge/2010">Linked Data Triplification Challenge 2010</a></span> (scientific rewiewer)</li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://events.linkeddata.org/ldow2010/">Linked Data on the Web</a> (LDOW2010)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.semanticscripting.org/SFSW2010/">6th Workshop on Scripting and Development for the Semantic Web</a> (SFSW2010)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://tw.rpi.edu/portal/IPAW2010">Third International Provenance and Annotation Workshop</a> (IPAW2010)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.dai-labor.de/spim2010/index.html">1st Workshop on Semantic Personalized Information Management</a> (SPIM2010)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Conference: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.eswc2010.org/calls/social-web">Social Web track, Extended Semantic Web Conference</a> (ESWC2010)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Conference: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.eswc2010.org/calls/web-of-data">Web of Data track, Extended Semantic Web Conference</a> (ESWC2010)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Conference: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.eswc2010.org/calls/semantic-web-in-use">Semantic Web in Use track, Extended Semantic Web Conference</a> (ESWC2010)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">AIII Spring Symposium: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.foaf-project.org/events/linkedai">Linked AI: Linked Data Meets Artificial Intelligence</a> (2010)</span></li>
+</ul>
+
+<h4>2009</h4>
+
+<ul rel="swc:holdsRole">
+<li typeof="swc:ProgrammeCommitteeMember">Reviewer: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.ijswis.org/">International Journal of Semantic Web Information Systems</a> (IJSWIS), <a href="http://eventseer.net/e/4789/">Special issue on Linked Data</a></span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Conference: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://iswc2009.semanticweb.org/">International Semantic Web Conference, Research Track</a> (ISWC2009)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Challenge: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.linkeddata-a-thon.com/">1st Linked Data-a-thon at ISWC 2009</a></span> (judge)</li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://sdow2009.semanticweb.org/">Social Data on the Web</a> (SDoW2009)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://dig.csail.mit.edu/2009/SemRUs-ISWC09/">Semantics for the Rest of Us</a> (SemRUs-ISWC09)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Conference: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://i-semantics.tugraz.at/conference">I-Semantics 2009</a></span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://ir-kr.okkam.org/">Identity and Reference in web-based Knowledge Representation</a> (IR-KR2009)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://events.linkeddata.org/ldow2009/">Linked Data on the Web</a> (LDOW2009)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://dig.csail.mit.edu/2009/SemRUs09/">Semantics for the Rest of Us</a> (SemRUs09)</span></li>
+</ul>
+
+<h4>2008</h4>
+
+<ul rel="swc:holdsRole">
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://sdow2008.semanticweb.org/">Social Data on the Web</a> (SDoW2008)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Conference: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://i-know.tugraz.at/previous_conferences/i_semantics_08">I-Semantics 2008</a></span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://events.linkeddata.org/ldow2008/">Linked Data on the Web</a> (LDOW2008)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.semanticscripting.org/SFSW2008/">4th Workshop on Scripting for the Semantic Web</a> (SFSW2008)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.okkam.org/IRSW2008">Identity and Reference on the Semantic Web</a> (IRSW2008)</span></li>
+</ul>
+
+<h4>2007</h4>
+
+<ul rel="swc:holdsRole">
+<li typeof="swc:ProgrammeCommitteeMember">Conference: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://aksw.org/SocialSemanticWebConference">SABRE Conference on Social Semantic Web</a> (CSSW2007)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Workshop: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.semanticscripting.org/SFSW2007/">3rd Workshop on Scripting for the Semantic Web</a> (SFSW2007)</span></li>
+<li typeof="swc:ProgrammeCommitteeMember">Conference: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://www.hpl.hp.com/conferences/juc2007/">Jena User Conference 2007</a> (JUC2007)</span></li>
+</ul>
+
+<h4>2006</h4>
+
+<ul rel="swc:holdsRole">
+<li typeof="swc:ProgrammeCommitteeMember">Conference: <span rel="swc:isRoleAt"><a property="rdfs:label" rel="foaf:homepage" href="http://jena.hpl.hp.com/juc2006/">Jena User Conference 2006</a> (JUC2006)</span></li>
+</ul>
+
+<h2>Data</h2>
+
+<p><a href="http://www.w3.org/2007/08/pyRdfa/extract?uri=http%3A%2F%2Frichard.cyganiak.de%2F"><img src="images/sw-rdfa-orange.png" alt="[RDFa logo]" title="RDFa data extracted from this homepage" /></a></p>
+
+</body>
+</html>
