@@ -2,14 +2,6 @@ $(function() {
 	listDatasources();
 	
 	/* actions */
-	// add or change a data source
-	$("#ds-name").live("keyup", function () {
-		var dsName = $("#ds-name").val().toLowerCase();
-		var dsID = generateDatasourceID(dsName);
-		if($("#ws-main #ds-update").text() != "Update") { // only generate ID for add ....
-			$("#ds-id").text(dsID);
-		}
-	});
 	
 	$("#ds-update").live("click", function() {
 		updateDatasource();
@@ -73,15 +65,6 @@ $(function() {
 	});
 });
 
-function generateDatasourceID(dsName){
-	var dsid = removeAllWS(dsName);
-	dsid = dsid.replace(/[^a-zA-Z0-9-_]/g, '');	
-	return dsid;
-}
-
-function removeAllWS(text){
-	return (text || "").replace( /\s+/g, "");
-}
 
 function listDatasources(){
 	$.getJSON("../api/datasource/all", function(data) {
@@ -95,8 +78,8 @@ function listDatasources(){
 }
 
 function updateDatasource(){
+	var dsid = $("#ds-id").text()
 	var dsdata = {
-		id : $("#ds-id").text(),
 		name : $("#ds-name").val(),
 		access_method : $("#ds-access").val(),
 		access_uri : $("#ds-access-uri").val(),
@@ -104,10 +87,16 @@ function updateDatasource(){
 	};
 	
 	dsdata = $.toJSON(dsdata);
+
+	var noun = "../api/datasource";
+	
+	if(dsid != '') {
+		noun = dsid + "/";
+	}
 	
 	$.ajax({
 		type: "POST",
-		url: "../api/datasource",
+		url: noun,
 		data: "dsdata="+ dsdata,
 		success: function(data){
 			$("#workspace").html("");
@@ -137,11 +126,11 @@ function selectTab(tabID, dsID) {
 		});
 		// set form values
 		$.getJSON(dsID, function(data) {
-			$("#ds-id").text(data[0].id);
-			$("#ds-name").val(data[0].name);
-			$("#ds-access option[value='" + data[0].access_method + "']").attr("selected", true);
- 			$("#ds-access-uri").val(data[0].access_uri);
-			$("input:radio[name='ds-mode'][value='" + data[0].access_mode +"']").attr('checked', true);
+			$("#ds-id").text(data.id);
+			$("#ds-name").val(data.name);
+			$("#ds-access option[value='" + data.access_method + "']").attr("selected", true);
+ 			$("#ds-access-uri").val(data.access_uri);
+			$("input:radio[name='ds-mode'][value='" + data.access_mode +"']").attr('checked', true);
 		});
 	
 	}

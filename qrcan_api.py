@@ -24,73 +24,94 @@ from rdflib import Literal
 from rdflib import RDF
 from rdflib import XSD
 
+from qrcan_ds import *
 from qrcan_exceptions import *
 from qrcan_store import *
 
 class QrcanAPI:
+	# HTTP API configuration:
+	API_BASE = '/api'
+	DATASOURCES_API_BASE = '/datasource'
+	# Configuration of the data source description store:
+	DATASOURCES_METADATA_BASE = 'datasources/'
 	
-	DATASOURCES_METADATA_BASE = 'datasources'
-	
-	def __init__(self):
-		self.datasources = Graph()
-		self.dslist = list()
+	def __init__(self, api_base):
+		self.datasources = dict()
+		self.api_base = api_base
+		self.datasource_base = ''.join([api_base, QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE, '/'])
 		self.store = QrcanStore()
 		self.apimap = {
-				'/api/datasource/all' : 'list_all_datasources',
-				'/api/datasource' : 'update_datasource',
-				'/api/query' : 'query_datasource'
+				''.join([QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE, '/all']) : 'list_all_datasources', # GET
+				''.join([QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE]) : 'add_datasource'                # POST
 		}
+		_logger.debug('API ready at %s' %''.join([api_base, QrcanAPI.API_BASE]))
 		
 	def dispatch_api_call(self, noun, instream, outstream, headers):
 		try:
 			m = getattr(self, self.apimap[str(noun)]) # handling fixed resources
 			m(instream, outstream, headers)
 		except KeyError: # handling potentially dynamic resources
-			if noun.startswith('/api/datasource/'):
+			if noun.startswith(''.join([QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE, '/'])):
 				try:
-					self._serve_ds_description(outstream, noun.split("/")[-1])
+					dsid = ''.join([self.api_base, noun])
+					_logger.debug('Target data source [%s]' %dsid)
+					if dsid.endswith('/'): # POST
+						dsid = dsid[:-1] # remove the trailing slash
+						self._update_datasource(instream, outstream, headers, dsid)
+					else: # GET
+						self._serve_datasource(outstream, dsid)
 				except DatasourceNotExists:
-					_logger.debug('data source does not exist')
+					_logger.debug('Seems the data source does not exist!')
 					raise HTTP404
 			else:
 				_logger.debug('unknown noun %s' %noun)
 				raise HTTP404
 
 	def init_datasources(self):
-		_logger.debug('scanning [%s] for data sources ...' %QrcanAPI.DATASOURCES_METADATA_BASE)
+		_logger.debug('Scanning [%s] for data sources ...' %QrcanAPI.DATASOURCES_METADATA_BASE)
 		for f in os.listdir(QrcanAPI.DATASOURCES_METADATA_BASE):
 			if f.endswith('.ttl'):
-				self.datasources.parse(''.join([QrcanAPI.DATASOURCES_METADATA_BASE, '/', f]), format='n3')
-		self.dslist = self._generate_datasource_list()
-		
-	def list_all_datasources(self, instream, outstream, headers):
-		outstream.write(json.JSONEncoder().encode(self.dslist))
+				ds = Datasource(self.datasource_base, QrcanAPI.DATASOURCES_METADATA_BASE)
+				ds.load(''.join([QrcanAPI.DATASOURCES_METADATA_BASE, f]))
+				self.datasources[ds.identify()] = ds
+				_logger.debug('Added data sources [%s]' %ds.identify())
 
-	def query_datasource(self, instream, outstream, headers):
-		_logger.debug("query ds")
-		res = self.store.query_datasource('http://localhost:6969/api/datasource/michaelsfoaffile', 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?label WHERE { ?s rdfs:label ?label }')
-		for r in res:
-			outstream.write(str(r))
+	def list_all_datasources(self, instream, outstream, headers):
+		dslist = list()
+		for ds in self.datasources.itervalues():
+			dslist.append(ds.describe(encoding = 'raw'))
+		outstream.write(json.JSONEncoder().encode(dslist))
 		
-	def update_datasource(self, instream, outstream, headers):
+	def add_datasource(self, instream, outstream, headers):
 		dsdata = self._get_formenc_param(instream, headers, 'dsdata')
 		if dsdata:
-			_logger.info('Creating data source with following characteristics:')
+			_logger.debug('Creating data source with:')
 			for key in dsdata.keys():
-				_logger.info('%s = %s' %(key, dsdata[key]))
-			space_id = self._create_ds_description(dsdata['id'], dsdata['name'], dsdata['access_method'], dsdata['access_uri'], dsdata['access_mode'])
-			self.store.add_datasource_doc(space_id, dsdata['access_uri'])
-		else:
-			_logger.info('Creating stub data source due to insufficient information provided.')
-		self.init_datasources()
+				_logger.debug('%s = %s' %(key, dsdata[key]))
+			ds = Datasource(self.datasource_base, QrcanAPI.DATASOURCES_METADATA_BASE)
+			ds.update(dsdata['name'], dsdata['access_method'], dsdata['access_uri'], dsdata['access_mode'])
+			ds.store()
+			self.datasources[ds.identify()] = ds
 
-	def _serve_ds_description(self, outstream, ds_id):
-		ds_desc = ''.join(['http://localhost:6969/api/datasource/', ds_id)
-		if ds_id in self.dslist
-
+	def _serve_datasource(self, outstream, dsid):
+		_logger.debug('Trying to get description of data source [%s] ...' %dsid)
+		try:
+			ds = self.datasources[dsid]
+			outstream.write(ds.describe())
 		except KeyError:
-		  raise DatasourceNotExists
-		outstream.write(json.JSONEncoder().encode(self._get_ds(ds)))
+			raise DatasourceNotExists
+
+	def _update_datasource(self, instream, outstream, headers, dsid):
+		dsdata = self._get_formenc_param(instream, headers, 'dsdata')
+		if dsdata:
+			_logger.debug('Updating data source with:')
+			for key in dsdata.keys():
+				_logger.debug('%s = %s' %(key, dsdata[key]))
+			try:
+				self.datasources[dsid].update(dsdata['name'], dsdata['access_method'], dsdata['access_uri'], dsdata['access_mode'])
+				self.datasources[dsid].store()
+			except KeyError:
+				raise DatasourceNotExists
 
 	def _get_formenc_param(self, instream, headers, param):
 		encparams = instream.read(int(headers.getheader('content-length')))

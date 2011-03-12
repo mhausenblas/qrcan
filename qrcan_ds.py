@@ -77,6 +77,11 @@ class Datasource:
 		self.g.bind('dcterms', Datasource.NAMESPACES['dcterms'], True)
 		self.g.bind('qrcan', Datasource.NAMESPACES['qrcan'], True)
 
+	def identify(self):
+		"""Returns the ID of the data source as string.
+		"""
+		return str(self.id)
+
 	def location(self):
 		"""Returns the path to the VoID file where the data source is made persistent.
 		"""
@@ -94,7 +99,8 @@ class Datasource:
 								dcterms:modified ?modified; 
 								qrcan:mode ?accessMode . 
 								OPTIONAL { ?ds void:dataDump ?dumpURI . } 
-								OPTIONAL { ?ds void:sparqlEndpoint ?sparqlURI . } 
+								OPTIONAL { ?ds void:sparqlEndpoint ?sparqlURI . }
+								OPTIONAL { ?ds qrcan:synced ?lastSync . } 
 						}
 		"""
 		res = self.g.query(querystr, initNs=Datasource.NAMESPACES)
@@ -119,6 +125,12 @@ class Datasource:
 					self.access_mode = Datasource.MODE_REMOTE
 				else:
 					self.access_mode = Datasource.MODE_LOCAL
+			try:
+				if r['lastSync']:
+					self.last_sync = r['lastSync']
+			except KeyError:
+				pass
+
 	
 	def store(self):
 		"""Stores the data source description to a VoID file.
@@ -150,11 +162,13 @@ class Datasource:
 		else:
 			self.g.remove((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], None))
 		
-	def describe(self, format = 'json'):
+	def describe(self, format = 'json', encoding = 'str'):
 		"""Creates a description of the data source.
 
 		The format parameter determines the resulting description format:
-		'json' produces a JSON-encoded string and 'rdf' an RDF/Turtle string.
+		'json' produces a JSON object and 'rdf' an RDF/Turtle string.
+		If encoding is set to 'raw', the respective object is returned,
+		if set to 'str', an string-encoded version is returned.  
 		"""
 		if format == 'json':
 			ds = {	'id' : self.id, 
@@ -166,10 +180,16 @@ class Datasource:
 			}
 			if self.access_mode == Datasource.MODE_LOCAL:
 				ds['last_sync'] =  str(self.last_sync)
-			return json.JSONEncoder().encode(ds)
-		
+			if encoding == 'str':
+				return json.JSONEncoder().encode(ds)
+			else:
+				return ds
+				
 		if format == 'rdf':
-			return str(self.g.serialize(format='n3'))
+			if encoding == 'str':
+				return str(self.g.serialize(format='n3'))
+			else:
+				return self.g
 
 	def sync(self):
 		"""Synchronises local data sources.
@@ -179,12 +199,14 @@ class Datasource:
 		"""
 		if self.access_mode == Datasource.MODE_LOCAL:
 			self.last_sync = datetime.datetime.utcnow()
+			self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
 
 if __name__ == '__main__':
 	print('Creating local data source:')
 	ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
 	ds.update('local test', Datasource.ACCESS_DOCUMENT, 'examples/statistics-ireland.rdf', Datasource.MODE_LOCAL)
 	ds.sync()
+	print(ds.identify())
 	print(ds.describe()) # defaults to JSON
 	print(ds.describe('rdf'))
 	ds.store() # make data source description persistent
@@ -193,6 +215,7 @@ if __name__ == '__main__':
 	ds_new = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
 	ds_new.load(ds.location())
 	ds_new.update('remote test', Datasource.ACCESS_DOCUMENT, 'examples/statistics-ireland.rdf', Datasource.MODE_REMOTE)
+	ds_new.sync()
 	print(ds_new.describe())
 	print(ds_new.describe('rdf'))
 	#ds_new.store()

@@ -13,7 +13,7 @@ _handler = logging.StreamHandler()
 _handler.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
 _logger.addHandler(_handler)
 
-import sys	
+import sys
 import BaseHTTPServer
 import SimpleHTTPServer
 import urlparse
@@ -22,9 +22,10 @@ from qrcan_exceptions import *
 from optparse import OptionParser
 
 QRCAN_DEFAULT_PORT = 6969
+QRCAN_HOST = 'http://localhost'
 
 class QrcanWebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
-	qrcanapi = qrcan_api.QrcanAPI()
+	qrcanapi = qrcan_api.QrcanAPI(''.join([QRCAN_HOST, ':', str(QRCAN_DEFAULT_PORT)]))
 	qrcanapi.init_datasources()
 	
 	def do_GET(self):
@@ -33,7 +34,6 @@ class QrcanWebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			self.send_header('Content-type', 'application/json')
 			self.end_headers()
 			try:
-				
 				QrcanWebHandler.qrcanapi.dispatch_api_call(self.path, self.rfile, self.wfile, self.headers)
 			except HTTP404:
 				_logger.warning('unsupported API call')
@@ -58,26 +58,23 @@ class QrcanWebHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-	parser = OptionParser()
-	parser.set_usage('%prog [options] ')
-	parser.add_option('-p', '--port', dest = 'port', help = 'The port qrcan should listen on, defaults to %s' %QRCAN_DEFAULT_PORT)
-	(options, args) = parser.parse_args()
+	#parser = OptionParser()
+	#parser.set_usage('%prog [options] ')
+	#parser.add_option('-p', '--port', dest = 'port', help = 'The port qrcan should listen on, defaults to %s' %QRCAN_DEFAULT_PORT)
+	#(options, args) = parser.parse_args()
 
-	port = QRCAN_DEFAULT_PORT
-
-	if options.port:
-		try:
-			port = int(options.port)
-			if not ( 0 < port < 65536 ):
-				raise ValueError()
-		except ValueError:
-			parser.error('The port number has to be numeric, between 1 and 65535)')
+	#if options.port:
+	#	try:
+	#		port = int(options.port)
+	#		if not ( 0 < port < 65536 ):
+	#			raise ValueError()
+	#	except ValueError:
+	#		parser.error('The port number has to be numeric, between 1 and 65535)')
 	
-	httpd = BaseHTTPServer.HTTPServer(('', port), QrcanWebHandler)
+	httpd = BaseHTTPServer.HTTPServer(('', QRCAN_DEFAULT_PORT), QrcanWebHandler)
 	print '-'*40
-	print 'qrcan server running on port %s ...' %port
+	print 'qrcan server running on port %s ...' %QRCAN_DEFAULT_PORT
 	print '-'*40
-	
  
 	try:
 		httpd.serve_forever()
