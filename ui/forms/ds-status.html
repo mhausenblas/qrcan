@@ -1,8 +1,13 @@
 <div>
 	<fieldset>
-		<legend>Last synchronisation</legend>
-			<span id="ds-last-sync"></span>
-			<div class="fnote">For local data sources only (remote data sources are accessed live).</div>
-			<button id="ds-sync">Sync now!</button>
+		<legend>Last change</legend>
+			<span id="ds-last-update" class="status-field"></span>
+			<div class="fnote">Shows when the data source has been changed (via the <em>Admin</em> tab).</div>
 	</fieldset>
+	<fieldset>
+		<legend>Last synchronisation</legend>
+			<span id="ds-last-sync" class="status-field"></span>
+			<div class="fnote">Shows when the data source has been synchronised. This is only applicable for local data sources as remote data sources are accessed live.</div>
+	</fieldset>
+	<div class="cmdbar"><button id="ds-sync">Sync now!</button></div>
 </div>

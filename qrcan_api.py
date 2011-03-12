@@ -32,6 +32,8 @@ class QrcanAPI:
 	# HTTP API configuration:
 	API_BASE = '/api'
 	DATASOURCES_API_BASE = '/datasource'
+	ALL_DS_NOUN = '/all'
+	SYNC_DS_NOUN ='/sync'
 	# Configuration of the data source description store:
 	DATASOURCES_METADATA_BASE = 'datasources/'
 	
@@ -41,7 +43,7 @@ class QrcanAPI:
 		self.datasource_base = ''.join([api_base, QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE, '/'])
 		self.store = QrcanStore()
 		self.apimap = {
-				''.join([QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE, '/all']) : 'list_all_datasources', # GET
+				''.join([QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE, QrcanAPI.ALL_DS_NOUN]) : 'list_all_datasources', # GET
 				''.join([QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE]) : 'add_datasource'                # POST
 		}
 		_logger.debug('API ready at %s' %''.join([api_base, QrcanAPI.API_BASE]))
@@ -55,11 +57,15 @@ class QrcanAPI:
 				try:
 					dsid = ''.join([self.api_base, noun])
 					_logger.debug('Target data source [%s]' %dsid)
-					if dsid.endswith('/'): # POST
+					if noun.endswith('/'): # POST
 						dsid = dsid[:-1] # remove the trailing slash
 						self._update_datasource(instream, outstream, headers, dsid)
 					else: # GET
-						self._serve_datasource(outstream, dsid)
+						if noun.endswith(QrcanAPI.SYNC_DS_NOUN):
+							dsid = dsid[:-len(QrcanAPI.SYNC_DS_NOUN)]
+							self._sync_datasource(outstream, dsid)
+						else:
+							self._serve_datasource(outstream, dsid)
 				except DatasourceNotExists:
 					_logger.debug('Seems the data source does not exist!')
 					raise HTTP404
@@ -97,6 +103,15 @@ class QrcanAPI:
 		_logger.debug('Trying to get description of data source [%s] ...' %dsid)
 		try:
 			ds = self.datasources[dsid]
+			outstream.write(ds.describe())
+		except KeyError:
+			raise DatasourceNotExists
+
+	def _sync_datasource(self, outstream, dsid):
+		_logger.debug('Trying to sync data source [%s] ...' %dsid)
+		try:
+			ds = self.datasources[dsid]
+			ds.sync()
 			outstream.write(ds.describe())
 		except KeyError:
 			raise DatasourceNotExists

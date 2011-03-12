@@ -51,6 +51,15 @@ $(function() {
 		selectTab(tabID, dsID);
 	});
 	
+	// sync
+	$("#ds-sync").live("click", function () {
+		var dsID = $("#ws-selected-ds a").attr("href");
+		$.get(dsID + '/sync', function(data) {
+			selectTab('ws-tab-status', dsID);
+		});
+	});
+	
+	
 	// hoover effects
 	$(".datasource").live("mouseover", function() {
 		$(this).css("color", "#44A");
@@ -99,7 +108,6 @@ function updateDatasource(){
 		url: noun,
 		data: "dsdata="+ dsdata,
 		success: function(data){
-			$("#workspace").html("");
 			listDatasources();
 		},
 		error:  function(msg){
@@ -111,10 +119,8 @@ function updateDatasource(){
 function selectTab(tabID, dsID) {
 	var tabMap = { 
 		"ws-tab-query" : "forms/ds-query.html",
-		"ws-tab-status" : "forms/ds-status.html",
 		"ws-tab-schema" : "forms/ds-schema.html",
-		"ws-tab-export" : "forms/ds-export.html",
-		"ws-tab-admin" : "forms/ds-admin.html"
+		"ws-tab-export" : "forms/ds-export.html"
 	}
 
 	if(tabID == "ws-tab-admin") {
@@ -132,12 +138,28 @@ function selectTab(tabID, dsID) {
  			$("#ds-access-uri").val(data.access_uri);
 			$("input:radio[name='ds-mode'][value='" + data.access_mode +"']").attr('checked', true);
 		});
-	
+		return;
 	}
-	else {
-		$.get(tabMap[tabID], function(data) {
+
+	if(tabID == "ws-tab-status") {
+		$.get("forms/ds-status.html", function(data) {
 			$("#ws-main").html(data);
 		});
+		// set form values
+		$.getJSON(dsID, function(data) {
+			$("#ds-last-update").text(data.updated);
+			if(data.access_mode == 'local') {
+				$("#ds-last-sync").text(data.last_sync);
+			}
+			else {
+				$("#ds-last-sync").text('N/A');
+			}
+		});
+		return;
 	}
+	
+	$.get(tabMap[tabID], function(data) {
+		$("#ws-main").html(data);
+	});
 }
 

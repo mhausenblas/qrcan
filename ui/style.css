@@ -179,3 +179,8 @@ fieldset label {
 	color: #303030;
 	font-weight: bold;
 }
+
+.status-field {
+	font-size: 120%;
+	color: #606060;
+}
