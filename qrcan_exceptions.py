@@ -13,4 +13,8 @@ class HTTP404(Exception): pass
 # data source excpetions
 class DatasourceNotExists(Exception): pass
 
-class DatasourceLoadError(Exception): pass
+class DatasourceAccessError(Exception): pass
+
+class DatasourceLoadError(DatasourceAccessError): pass
+
+class DatasourceNotSyncedError(DatasourceAccessError): pass

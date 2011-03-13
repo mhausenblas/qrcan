@@ -25,6 +25,7 @@ from rdflib import URIRef
 from rdflib import Literal
 from rdflib import RDF
 from rdflib import XSD
+from rdfextras.sparql.query import SPARQLQueryResult
 from rdflib.plugin import PluginException
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -74,7 +75,7 @@ class Datasource:
 		self.access_method = Datasource.ACCESS_DOCUMENT
 		self.access_uri = ''
 		self.access_mode = Datasource.MODE_REMOTE
-		self.last_sync = datetime.datetime.utcnow()
+		self.last_sync = None
 		self.g.bind('void', Datasource.NAMESPACES['void'], True)
 		self.g.bind('dcterms', Datasource.NAMESPACES['dcterms'], True)
 		self.g.bind('qrcan', Datasource.NAMESPACES['qrcan'], True)
@@ -83,6 +84,16 @@ class Datasource:
 		"""Returns the ID of the data source as string.
 		"""
 		return str(self.id)
+		
+	def sync_status(self):
+		"""Returns the synchronisation status of the data source.
+		
+		False if not yet synced, a UTC-based date-time stamp string of last sync otherwise.
+		"""
+		if self.last_sync:
+			return str(self.last_sync)
+		else:
+			return False
 
 	def location(self):
 		"""Returns the path to the VoID file where the data source is made persistent.
@@ -132,7 +143,6 @@ class Datasource:
 					self.last_sync = r['lastSync']
 			except KeyError:
 				pass
-
 	
 	def store(self):
 		"""Stores the data source description to a VoID file.
@@ -159,10 +169,11 @@ class Datasource:
 		else:
 			self.g.set((URIRef(self.id), Datasource.NAMESPACES['void']['sparqlEndpoint'], URIRef(self.access_uri)))
 		self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['mode'], URIRef(str(Datasource.NAMESPACES['qrcan'] + self.access_mode))))
-		if self.access_mode == Datasource.MODE_LOCAL:
-			self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
-		else:
-			self.g.remove((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], None))
+		if self.sync_status(): # only remember if synced
+			if self.access_mode == Datasource.MODE_LOCAL:
+				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
+			else:
+				self.g.remove((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], None))
 		
 	def describe(self, format = 'json', encoding = 'str'):
 		"""Creates a description of the data source.
@@ -180,7 +191,7 @@ class Datasource:
 					'access_uri' : self.access_uri,
 					'access_mode' : self.access_mode
 			}
-			if self.access_mode == Datasource.MODE_LOCAL:
+			if self.access_mode == Datasource.MODE_LOCAL and sync_status():
 				ds['last_sync'] =  str(self.last_sync)
 			if encoding == 'str':
 				return json.JSONEncoder().encode(ds)
@@ -199,50 +210,64 @@ class Datasource:
 		For local data sources - updates the last_sync field.
 		Remote data sources are not effected.
 		"""
-		if self.access_mode == Datasource.MODE_LOCAL:
+		if self.access_mode == Datasource.MODE_LOCAL and self.access_method == Datasource.ACCESS_DOCUMENT: # restrict to RDF documents for now
 			try:
-				_logger.debug('Trying to load %s into data source [%s]' %(self.access_uri, str(self.id)))
-				if self.access_uri.endswith('.rdf'):
-					g.parse(location = self.access_uri)
-				elif self.access_uri.endswith('.ttl') or self.access_uri.endswith('.n3') :
-					g.parse(location = self.access_uri, format="n3")
-				elif self.access_uri.endswith('.nt'):
-					g.parse(location = self.access_uri, format="nt")
-				elif self.access_uri.endswith('.html'):
-					g.parse(location = self.access_uri, format="rdfa")
-				else:
-					g.parse(location = self.access_uri)
-				
+				self._load_from_file(g)
 				self.last_sync = datetime.datetime.utcnow()
 				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
-			except Exception:
-				#(type, value, traceback) = sys.exc_info()
-				#_logger.debug('type: %s' %type)
-				raise DatasourceLoadError
+			except DatasourceLoadError:
+				_logger.debug('Sync failed - not able to load content from remote data source.')
 
 	def query(self, g, query_str):
 		"""Queries a data sources using a given graph.
 		"""
-		# TODO: for SPARQL Endpoints use _remote_sync_SPARQL, for remote RDF docs, load them first into graph
-		if self.access_method == Datasource.ACCESS_DOCUMENT:
-			if self.access_mode == Datasource.MODE_LOCAL:
-				res = g.query(query_str)
-			else:
-				pass
-				#for remote RDF docs, load them first into graph
-		else: # SPARQL Endpoints
-			pass
-			# TODO: for SPARQL Endpoints use _remote_sync_SPARQL
+		try:
+			if self.access_method == Datasource.ACCESS_DOCUMENT: # the data source is an RDF document
+				if self.access_mode == Datasource.MODE_LOCAL: # it's a local data source, hence we assume it has already been synced
+					if self.sync_status(): 
+						res = g.query(query_str)
+					else:
+						raise DatasourceNotSyncedError
+				else: # Datasource.MODE_REMOTE
+					tmp = Graph()
+					self._load_from_file(tmp)
+					res = tmp.query(query_str)
+			else: # Datasource.ACCESS_SPARQL_ENDPOINT -> the data source is a SPARQL Endpoint, currently no disctinction between local and remote
+				res = self._query_SPARQL_Endpoint(self.access_uri, query_str)
+		except DatasourceAccessError, d:
+			_logger.debug('Query failed - not able to access data source: %s' %type(d))
+			return None
 		return res
-		
-	def _remote_sync_SPARQL(self, query_str, endpoint_URI):
-		sparql = SPARQLWrapper(endpoint_URI)
-		sparql.setQuery(query_str)
-		sparql.setReturnFormat(JSON)
-		results = sparql.query().convert()
 
-		for result in results["results"]["bindings"]:
-		    print result["label"]["value"]
+	def _load_from_file(self, g):
+		try:
+			_logger.debug('Trying to load %s into data source [%s]' %(self.access_uri, str(self.id)))
+			if self.access_uri.endswith('.rdf'):
+				g.parse(location = self.access_uri)
+			elif self.access_uri.endswith('.ttl') or self.access_uri.endswith('.n3') :
+				g.parse(location = self.access_uri, format="n3")
+			elif self.access_uri.endswith('.nt'):
+				g.parse(location = self.access_uri, format="nt")
+			elif self.access_uri.endswith('.html'):
+				g.parse(location = self.access_uri, format="rdfa")
+			else:
+				g.parse(location = self.access_uri)
+		except Exception:
+			raise DatasourceLoadError
+
+	def _query_SPARQL_Endpoint(self, endpoint_URI, query_str):
+		try:
+			sparql = SPARQLWrapper(endpoint_URI)
+			sparql.setQuery(query_str)
+			sparql.setReturnFormat(JSON)
+			results = sparql.query().convert()
+			results = SPARQLQueryResult(results)
+			return results
+		except Exception, e:
+			_logger.debug('SPARQL access failed - %s' %e)
+			raise DatasourceAccessError
+		#for result in results["results"]["bindings"]:
+		#    print result["label"]["value"]
 
 if __name__ == '__main__':
 	_logger = logging.getLogger('ds')
@@ -251,19 +276,20 @@ if __name__ == '__main__':
 	_handler.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
 	_logger.addHandler(_handler)
 
+	q = """	SELECT * 
+					WHERE { 
+						?s ?p ?o .
+					}
+					LIMIT 3
+	"""
+
 	dslist = { 	'RDF/XML' : 'examples/statistics-ireland.rdf',
-				'NTriple' : 'examples/business-data.gov.uk.nt',
-				'Turtle'  : 'examples/dbpedia-ireland.ttl',
-				'RDFa'    : 'examples/cygri-foaf.html'
+			#	'NTriple' : 'examples/business-data.gov.uk.nt',
+			#	'Turtle'  : 'examples/dbpedia-ireland.ttl',
+			#	'RDFa'    : 'examples/cygri-foaf.html'
 			}
 	
 	for s in dslist.keys():
-		q = """	SELECT * 
-						WHERE { 
-							?s ?p ?o ; 
-						}
-						LIMIT 3
-		"""
 		print('='*50)
 		print('Creating local data source: %s' %s)
 		g = Graph()
@@ -271,8 +297,11 @@ if __name__ == '__main__':
 		ds.update(s, Datasource.ACCESS_DOCUMENT, dslist[s], Datasource.MODE_LOCAL)
 		ds.sync(g)
 		res = ds.query(g, q)
-		for r in res:
-			print r
-		#print(ds.identify())
-		#print(ds.describe('rdf'))
-		#ds.store() # make data source description persistent
+		print(res)
+	
+	g = Graph()
+	ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
+#	ds.update('SPARQL test', Datasource.ACCESS_SPARQL_ENDPOINT, 'http://acm.rkbexplorer.com/sparql', Datasource.MODE_REMOTE)
+	ds.update('SPARQL test', Datasource.ACCESS_SPARQL_ENDPOINT, 'http://dbpedia.org/sparql', Datasource.MODE_REMOTE)
+	res = ds.query(g, q)
+	print(res)
