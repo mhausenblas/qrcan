@@ -25,6 +25,8 @@ from rdflib import URIRef
 from rdflib import Literal
 from rdflib import RDF
 from rdflib import XSD
+from rdflib.plugin import PluginException
+from SPARQLWrapper import SPARQLWrapper, JSON
 
 rdflib.plugin.register('sparql', rdflib.query.Processor, 'rdfextras.sparql.processor', 'Processor')
 rdflib.plugin.register('sparql', rdflib.query.Result, 'rdfextras.sparql.query', 'SPARQLQueryResult')
@@ -191,31 +193,86 @@ class Datasource:
 			else:
 				return self.g
 
-	def sync(self):
-		"""Synchronises local data sources.
+	def sync(self, g):
+		"""Synchronises a local data sources into a graph.
 		
 		For local data sources - updates the last_sync field.
 		Remote data sources are not effected.
 		"""
 		if self.access_mode == Datasource.MODE_LOCAL:
-			self.last_sync = datetime.datetime.utcnow()
-			self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
+			try:
+				_logger.debug('Trying to load %s into data source [%s]' %(self.access_uri, str(self.id)))
+				if self.access_uri.endswith('.rdf'):
+					g.parse(location = self.access_uri)
+				elif self.access_uri.endswith('.ttl') or self.access_uri.endswith('.n3') :
+					g.parse(location = self.access_uri, format="n3")
+				elif self.access_uri.endswith('.nt'):
+					g.parse(location = self.access_uri, format="nt")
+				elif self.access_uri.endswith('.html'):
+					g.parse(location = self.access_uri, format="rdfa")
+				else:
+					g.parse(location = self.access_uri)
+				
+				self.last_sync = datetime.datetime.utcnow()
+				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
+			except Exception:
+				#(type, value, traceback) = sys.exc_info()
+				#_logger.debug('type: %s' %type)
+				raise DatasourceLoadError
+
+	def query(self, g, query_str):
+		"""Queries a data sources using a given graph.
+		"""
+		# TODO: for SPARQL Endpoints use _remote_sync_SPARQL, for remote RDF docs, load them first into graph
+		if self.access_method == Datasource.ACCESS_DOCUMENT:
+			if self.access_mode == Datasource.MODE_LOCAL:
+				res = g.query(query_str)
+			else:
+				pass
+				#for remote RDF docs, load them first into graph
+		else: # SPARQL Endpoints
+			pass
+			# TODO: for SPARQL Endpoints use _remote_sync_SPARQL
+		return res
+		
+	def _remote_sync_SPARQL(self, query_str, endpoint_URI):
+		sparql = SPARQLWrapper(endpoint_URI)
+		sparql.setQuery(query_str)
+		sparql.setReturnFormat(JSON)
+		results = sparql.query().convert()
+
+		for result in results["results"]["bindings"]:
+		    print result["label"]["value"]
 
 if __name__ == '__main__':
-	print('Creating local data source:')
-	ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
-	ds.update('local test', Datasource.ACCESS_DOCUMENT, 'examples/statistics-ireland.rdf', Datasource.MODE_LOCAL)
-	ds.sync()
-	print(ds.identify())
-	print(ds.describe()) # defaults to JSON
-	print(ds.describe('rdf'))
-	ds.store() # make data source description persistent
-	print('='*50)
-	print('Creating remote data source based on previous data source')
-	ds_new = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
-	ds_new.load(ds.location())
-	ds_new.update('remote test', Datasource.ACCESS_DOCUMENT, 'examples/statistics-ireland.rdf', Datasource.MODE_REMOTE)
-	ds_new.sync()
-	print(ds_new.describe())
-	print(ds_new.describe('rdf'))
-	#ds_new.store()
+	_logger = logging.getLogger('ds')
+	_logger.setLevel(logging.DEBUG)
+	_handler = logging.StreamHandler()
+	_handler.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
+	_logger.addHandler(_handler)
+
+	dslist = { 	'RDF/XML' : 'examples/statistics-ireland.rdf',
+				'NTriple' : 'examples/business-data.gov.uk.nt',
+				'Turtle'  : 'examples/dbpedia-ireland.ttl',
+				'RDFa'    : 'examples/cygri-foaf.html'
+			}
+	
+	for s in dslist.keys():
+		q = """	SELECT * 
+						WHERE { 
+							?s ?p ?o ; 
+						}
+						LIMIT 3
+		"""
+		print('='*50)
+		print('Creating local data source: %s' %s)
+		g = Graph()
+		ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
+		ds.update(s, Datasource.ACCESS_DOCUMENT, dslist[s], Datasource.MODE_LOCAL)
+		ds.sync(g)
+		res = ds.query(g, q)
+		for r in res:
+			print r
+		#print(ds.identify())
+		#print(ds.describe('rdf'))
+		#ds.store() # make data source description persistent
