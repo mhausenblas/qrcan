@@ -25,7 +25,6 @@ from rdflib import URIRef
 from rdflib import Literal
 from rdflib import RDF
 from rdflib import XSD
-from rdfextras.sparql.query import SPARQLQueryResult
 from rdflib.plugin import PluginException
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -38,7 +37,7 @@ class Datasource:
 	"""A data source
 	
 	Represents a data source in qrcan, including loading from/storing 
-	to a file using VoID and other vocabualries to persist the state.
+	to a file using VoID and other vocabularies to persist the state.
 	"""
 	ACCESS_DOCUMENT = 'doc'
 	ACCESS_SPARQL_ENDPOINT = 'sparql'
@@ -191,7 +190,7 @@ class Datasource:
 					'access_uri' : self.access_uri,
 					'access_mode' : self.access_mode
 			}
-			if self.access_mode == Datasource.MODE_LOCAL and sync_status():
+			if self.access_mode == Datasource.MODE_LOCAL and self.sync_status():
 				ds['last_sync'] =  str(self.last_sync)
 			if encoding == 'str':
 				return json.JSONEncoder().encode(ds)
@@ -218,20 +217,21 @@ class Datasource:
 			except DatasourceLoadError:
 				_logger.debug('Sync failed - not able to load content from remote data source.')
 
+	# TODO: make the result formats uniform (separate class, simplified SPARQL/JSON)
 	def query(self, g, query_str):
 		"""Queries a data sources using a given graph.
 		"""
 		try:
 			if self.access_method == Datasource.ACCESS_DOCUMENT: # the data source is an RDF document
 				if self.access_mode == Datasource.MODE_LOCAL: # it's a local data source, hence we assume it has already been synced
-					if self.sync_status(): 
-						res = g.query(query_str)
+					if self.sync_status():
+						res = g.query(query_str).bindings
 					else:
 						raise DatasourceNotSyncedError
 				else: # Datasource.MODE_REMOTE
 					tmp = Graph()
 					self._load_from_file(tmp)
-					res = tmp.query(query_str)
+					res = tmp.query(query_str).result.bindings
 			else: # Datasource.ACCESS_SPARQL_ENDPOINT -> the data source is a SPARQL Endpoint, currently no disctinction between local and remote
 				res = self._query_SPARQL_Endpoint(self.access_uri, query_str)
 		except DatasourceAccessError, d:
@@ -260,8 +260,7 @@ class Datasource:
 			sparql = SPARQLWrapper(endpoint_URI)
 			sparql.setQuery(query_str)
 			sparql.setReturnFormat(JSON)
-			results = sparql.query().convert()
-			results = SPARQLQueryResult(results)
+			results = sparql.query()
 			return results
 		except Exception, e:
 			_logger.debug('SPARQL access failed - %s' %e)
@@ -276,7 +275,7 @@ if __name__ == '__main__':
 	_handler.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
 	_logger.addHandler(_handler)
 
-	q = """	SELECT * 
+	q = """	SELECT ?s ?p
 					WHERE { 
 						?s ?p ?o .
 					}
@@ -297,11 +296,13 @@ if __name__ == '__main__':
 		ds.update(s, Datasource.ACCESS_DOCUMENT, dslist[s], Datasource.MODE_LOCAL)
 		ds.sync(g)
 		res = ds.query(g, q)
-		print(res)
+		for r in res:
+			print(r)
 	
 	g = Graph()
 	ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
-#	ds.update('SPARQL test', Datasource.ACCESS_SPARQL_ENDPOINT, 'http://acm.rkbexplorer.com/sparql', Datasource.MODE_REMOTE)
+#	ds.update('SPARQL test', Datasource.ACCESS_SPARQL_ENDPOINT, 'http://acm.rkbexplorer.com/sparql/', Datasource.MODE_REMOTE)
 	ds.update('SPARQL test', Datasource.ACCESS_SPARQL_ENDPOINT, 'http://dbpedia.org/sparql', Datasource.MODE_REMOTE)
 	res = ds.query(g, q)
-	print(res)
+	for r in res:
+		print(r)

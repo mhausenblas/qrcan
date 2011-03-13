@@ -58,6 +58,12 @@ $(function() {
 			selectTab('ws-tab-status', dsID);
 		});
 	});
+
+	// query
+	$("#ds-exec-query").live("click", function () {
+		var dsID = $("#ws-selected-ds a").attr("href");
+		queryDatasource(dsID);
+	});
 	
 	
 	// hoover effects
@@ -94,9 +100,6 @@ function updateDatasource(){
 		access_uri : $("#ds-access-uri").val(),
 		access_mode : $("input:radio[name='ds-mode']:checked").val()
 	};
-	
-	dsdata = $.toJSON(dsdata);
-
 	var noun = "../api/datasource";
 	
 	if(dsid != '') {
@@ -106,9 +109,27 @@ function updateDatasource(){
 	$.ajax({
 		type: "POST",
 		url: noun,
-		data: "dsdata="+ dsdata,
+		data: "dsdata="+ $.toJSON(dsdata),
 		success: function(data){
 			listDatasources();
+		},
+		error:  function(msg){
+			alert(msg);
+		} 
+	});
+}
+
+function queryDatasource(dsid){
+	var querydata = {
+		query_str : $("#ds-query-str").val()
+	};
+	
+	$.ajax({
+		type: "POST",
+		url: dsid + "/query",
+		data: "querydata="+ $.toJSON(querydata),
+		success: function(data){
+			$("#query-result").html(data);
 		},
 		error:  function(msg){
 			alert(msg);

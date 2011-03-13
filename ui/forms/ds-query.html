@@ -1,3 +1,9 @@
 <div>
-Execute a SPARQL query against the data source.
+	<fieldset>
+		<legend>SPARQL Query</legend>
+			<textarea id="ds-query-str" rows="6" cols="50">SELECT ?s ?p WHERE { ?s ?p ?o . } LIMIT 3</textarea>
+			<div class="fnote">The SPARQL query to execute against the data source.</div>
+	</fieldset>
+	<div class="cmdbar"><button id="ds-exec-query">Execute</button></div>
+	<div id="query-result"></div>
 </div>
