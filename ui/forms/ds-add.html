@@ -14,7 +14,7 @@
 			</select>
 			<div class="fnote">Define the access to the data source: you can either specify the location of an RDF document (in RDF/XML, Turtle, RDFa, etc.) or you provide a SPARQL Endpoint URI (see also the <a href="http://labs.mondeca.com/sparqlEndpointsStatus/" target="_new">list of public SPARQL Endpoints</a> and their status).</div>
 	</fieldset>	
-	<fieldset>
+	<fieldset id="ds-mode-field">
 		<legend>Access mode</legend>
 		<input type="radio" name="ds-mode" value="local" /> local <input type="radio" name="ds-mode" value="remote" checked="checked"/> remote
 		<div class="fnote">Specify the way the data source should be accessed: if you choose <strong>local</strong>, the data source will be downloaded to the local store. If you choose <strong>remote</strong>, the data source will be queried live.</div>

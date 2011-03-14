@@ -5,7 +5,9 @@ $(function() {
 	
 	$("#ds-update").live("click", function() {
 		updateDatasource();
-		// refresh list
+		if($("#ds-update").text() == "Add ..."){
+			$("#workspace").html("");
+		}
 	});
 	
 	/* menu */
@@ -54,8 +56,10 @@ $(function() {
 	// sync
 	$("#ds-sync").live("click", function () {
 		var dsID = $("#ws-selected-ds a").attr("href");
+		busy();
 		$.get(dsID + '/sync', function(data) {
 			selectTab('ws-tab-status', dsID);
+			done();
 		});
 	});
 
@@ -64,8 +68,19 @@ $(function() {
 		var dsID = $("#ws-selected-ds a").attr("href");
 		queryDatasource(dsID);
 	});
-	
-	
+
+	// access method selection
+	$("#ds-access").live("change", function () {
+		var method = $("#ds-access").val();
+		if(method == 'sparql') {
+			$("#ds-mode-field").hide('slow');
+		}
+		else {
+			$("#ds-mode-field").show('slow');
+		}
+	});
+
+
 	// hoover effects
 	$(".datasource").live("mouseover", function() {
 		$(this).css("color", "#44A");
@@ -93,12 +108,21 @@ function listDatasources(){
 }
 
 function updateDatasource(){
-	var dsid = $("#ds-id").text()
+	var dsid = $("#ds-id").text();
+	var method = $("#ds-access").val();
+	
+	if(method == 'sparql') {
+		mode = 'remote';
+	}
+	else {
+		mode = $("input:radio[name='ds-mode']:checked").val();
+	}
+	
 	var dsdata = {
 		name : $("#ds-name").val(),
 		access_method : $("#ds-access").val(),
 		access_uri : $("#ds-access-uri").val(),
-		access_mode : $("input:radio[name='ds-mode']:checked").val()
+		access_mode : mode
 	};
 	var noun = "../api/datasource";
 	
@@ -106,12 +130,15 @@ function updateDatasource(){
 		noun = dsid + "/";
 	}
 	
+	busy();
+	
 	$.ajax({
 		type: "POST",
 		url: noun,
 		data: "dsdata="+ $.toJSON(dsdata),
 		success: function(data){
 			listDatasources();
+			done();
 		},
 		error:  function(msg){
 			alert(msg);
@@ -124,12 +151,14 @@ function queryDatasource(dsid){
 		query_str : $("#ds-query-str").val()
 	};
 	
+	busy();
 	$.ajax({
 		type: "POST",
 		url: dsid + "/query",
 		data: "querydata="+ $.toJSON(querydata),
 		success: function(data){
 			$("#query-result").html(data);
+			done();
 		},
 		error:  function(msg){
 			alert(msg);
@@ -158,6 +187,13 @@ function selectTab(tabID, dsID) {
 			$("#ds-access option[value='" + data.access_method + "']").attr("selected", true);
  			$("#ds-access-uri").val(data.access_uri);
 			$("input:radio[name='ds-mode'][value='" + data.access_mode +"']").attr('checked', true);
+			if(data.access_method == 'sparql') {
+				$("#ds-mode-field").hide('fast');
+			}
+			else {
+				$("#ds-mode-field").show('fast');
+			}
+			
 		});
 		return;
 	}
@@ -170,10 +206,11 @@ function selectTab(tabID, dsID) {
 		$.getJSON(dsID, function(data) {
 			$("#ds-last-update").text(data.updated);
 			if(data.access_mode == 'local') {
+				$("#ds-last-sync-field").show();
 				$("#ds-last-sync").text(data.last_sync);
 			}
 			else {
-				$("#ds-last-sync").text('N/A');
+				$("#ds-last-sync-field").hide();
 			}
 		});
 		return;
@@ -182,5 +219,15 @@ function selectTab(tabID, dsID) {
 	$.get(tabMap[tabID], function(data) {
 		$("#ws-main").html(data);
 	});
+}
+
+function busy(){
+	var oldtext = $("#pane-head").text();
+	$("#pane-head").html("<img src='img/busy.gif' alt='busy' /><span style='display:none'>" + oldtext + "</span>");
+}
+
+function done(){
+	var oldtext = $("#pane-head span").text();
+	$("#pane-head").html(oldtext);
 }
 
