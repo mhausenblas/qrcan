@@ -40,9 +40,12 @@ class QrcanStore(object):
 	
 	def init_datasource(self, graph_uri):
 		if self.mode == QrcanStore.MODE_INTERNAL:
-			graph = Graph()
-			self.store[graph_uri] = graph
-			return graph
+			try:
+				graph = self.store[graph_uri]
+			except KeyError:
+				graph = Graph()
+				self.store[graph_uri] = graph
+			return self.store[graph_uri]
 		else: # QrcanStore.MODE_EXTERNAL not yet implemented
 			return None
 
@@ -61,7 +64,7 @@ class QrcanStore(object):
 		if self.mode == QrcanStore.MODE_INTERNAL:
 			file_name = graph_uri.split('/')[-1]
 			file_name = ''.join([QrcanStore.INTERNAL_CONTENT_DIR, file_name, '.nt'])
-			g.parse(location = file_name, format="nt")
+			graph.parse(location = file_name, format="nt")
 			_logger.debug('Restored data source [%s] from %s' %(graph_uri, file_name))
 		else: # QrcanStore.MODE_EXTERNAL not yet implemented
 			return None

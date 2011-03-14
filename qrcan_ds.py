@@ -231,7 +231,7 @@ class Datasource:
 				else: # Datasource.MODE_REMOTE
 					tmp = Graph()
 					self._load_from_file(tmp)
-					res = tmp.query(query_str).result.bindings
+					res = tmp.query(query_str).bindings
 			else: # Datasource.ACCESS_SPARQL_ENDPOINT -> the data source is a SPARQL Endpoint, currently no disctinction between local and remote
 				res = self._query_SPARQL_Endpoint(self.access_uri, query_str)
 		except DatasourceAccessError, d:
@@ -239,6 +239,10 @@ class Datasource:
 			return None
 		return res
 
+	def is_local(self):
+		if self.access_mode == Datasource.MODE_LOCAL: return True
+		else: return False
+			
 	def _load_from_file(self, g):
 		try:
 			_logger.debug('Trying to load %s into data source [%s]' %(self.access_uri, str(self.id)))

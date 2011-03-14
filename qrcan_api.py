@@ -43,6 +43,7 @@ class QrcanAPI:
 		self.api_base = api_base
 		self.datasource_base = ''.join([api_base, QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE, '/'])
 		self.store = QrcanStore()
+		self.store.setup_store()
 		self.apimap = {
 				''.join([QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE, QrcanAPI.ALL_DS_NOUN]) : 'list_all_datasources', # GET
 				''.join([QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE]) : 'add_datasource'                # POST
@@ -97,8 +98,15 @@ class QrcanAPI:
 			_logger.debug('Creating data source with:')
 			for key in dsdata.keys():
 				_logger.debug('%s = %s' %(key, dsdata[key]))
+			# prepare metadata
 			ds = Datasource(self.datasource_base, QrcanAPI.DATASOURCES_METADATA_BASE)
 			ds.update(dsdata['name'], dsdata['access_method'], dsdata['access_uri'], dsdata['access_mode'])
+			# store content for local data sources
+			if ds.is_local():
+				g = self.store.init_datasource(ds.identify())
+				ds.sync(g)
+				self.store.store_datasource(g, ds.identify())
+			# store metadata
 			ds.store()
 			self.datasources[ds.identify()] = ds
 
@@ -111,21 +119,30 @@ class QrcanAPI:
 			raise DatasourceNotExists
 
 	def _sync_datasource(self, outstream, dsid):
-		_logger.debug('Trying to sync data source [%s] ...' %dsid)
-		try:
-			ds = self.datasources[dsid]
-			ds.sync(Graph())
-			outstream.write(ds.describe())
-		except KeyError:
-			raise DatasourceNotExists
+		if not ds.is_local():
+			_logger.debug('[%s] is a remote data source ... NOP' %dsid)		
+		else:
+			_logger.debug('Trying to sync data source [%s] ...' %dsid)
+			try:
+				ds = self.datasources[dsid]
+				g = self.store.init_datasource(ds.identify())
+				ds.sync(g)
+				ds.store()
+				self.store.store_datasource(g, ds.identify())
+				outstream.write(ds.describe())
+			except KeyError:
+				raise DatasourceNotExists
 
 	def _query_datasource(self, instream, outstream, headers, dsid):
 		querydata = self._get_formenc_param(instream, headers, 'querydata')
 		_logger.debug('Trying to query data source [%s] ...' %dsid)
 		try:
 			ds = self.datasources[dsid]
-			g = Graph()
-			ds.sync(g)
+			g = None
+			if ds.is_local():
+				g = self.store.init_datasource(ds.identify())
+				if not self.store.is_datasource_available(ds.identify()):
+					self.store.restore_datasource(g, ds.identify())
 			_logger.debug('Got query string: %s' %querydata['query_str'])
 			res = ds.query(g, querydata['query_str'])
 			for r in res:
