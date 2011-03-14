@@ -204,6 +204,7 @@ function selectTab(tabID, dsID) {
 		});
 		// set form values
 		$.getJSON(dsID, function(data) {
+			// TODO: use http://www.datejs.com/ for pretty datetime formatting
 			$("#ds-last-update").text(data.updated);
 			if(data.access_mode == 'local') {
 				$("#ds-last-sync-field").show();
