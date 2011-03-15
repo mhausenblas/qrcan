@@ -1,15 +1,6 @@
 $(function() {
 	listDatasources();
 	
-	/* actions */
-	
-	$("#ds-update").live("click", function() {
-		updateDatasource();
-		if($("#ds-update").text() == "Add ..."){
-			$("#workspace").html("");
-		}
-	});
-	
 	/* menu */
 	// cmd buttons
 	$("#ds-refresh").click(function () {
@@ -51,6 +42,20 @@ $(function() {
 		});
 		$(this).addClass("active-tab");
 		selectTab(tabID, dsID);
+	});
+	
+	/* actions */
+	
+	// add or update data source
+	$("#ds-update").live("click", function() {
+		updateDatasource();
+		if($("#ds-update").text() == "Add ..."){ // adding new data source
+			$("#workspace").html("");
+		}
+		else { // update existing data source
+			var dsID = $("#ws-selected-ds a").attr("href");
+			selectTab('ws-tab-admin', dsID);
+		}
 	});
 	
 	// sync
@@ -182,6 +187,7 @@ function selectTab(tabID, dsID) {
 		});
 		// set form values
 		$.getJSON(dsID, function(data) {
+			$("#ws-selected-ds").html("<a href='" + data.id + "'>" + data.name + "</a>");
 			$("#ds-id").text(data.id);
 			$("#ds-name").val(data.name);
 			$("#ds-access option[value='" + data.access_method + "']").attr("selected", true);
@@ -193,7 +199,7 @@ function selectTab(tabID, dsID) {
 			else {
 				$("#ds-mode-field").show('fast');
 			}
-			
+			$("#ds-last-update").text("Last change: " + dateFormat(data.updated));
 		});
 		return;
 	}
@@ -205,13 +211,18 @@ function selectTab(tabID, dsID) {
 		// set form values
 		$.getJSON(dsID, function(data) {
 			// TODO: use http://www.datejs.com/ for pretty datetime formatting
-			$("#ds-last-update").text(data.updated);
 			if(data.access_mode == 'local') {
 				$("#ds-last-sync-field").show();
 				$("#ds-last-sync").text(data.last_sync);
 			}
 			else {
 				$("#ds-last-sync-field").hide();
+			}
+			if(!data.num_triples || data.num_triples == 0) {
+				$("#ds-num-triples").text("Unknown - remote source or not synced, yet.");
+			}
+			else {
+				$("#ds-num-triples").text(data.num_triples);
 			}
 		});
 		return;
@@ -231,4 +242,35 @@ function done(){
 	var oldtext = $("#pane-head span").text();
 	$("#pane-head").html(oldtext);
 }
+
+function dateFormat(datetimestr){
+	if(!datetimestr || datetimestr == "") {
+		return "unknown";
+	}
+	else {
+		var d = new Date(datetimestr);
+		var today = new Date();
+		var m = d.getMinutes();
+		var s = d.getSeconds();
+		var year = d.getFullYear();
+		var month = d.getMonth();
+		var day = d.getDate();
+		var date = "";
+		
+		if(year == today.getFullYear() && month == today.getMonth() && day == today.getDate()) {
+			date = "Today ";
+		}
+		else{
+			if(month < 9) month = "0" + month;
+			date = year + "-" + month + "-" + day;
+		}
+		
+		if(s < 10) s = "0" + s;
+		if(m < 10) m = "0" + m;
+		
+		
+		return date + " at " + d.getHours() + ":" + m + ":" + s;
+	}
+}
+
 

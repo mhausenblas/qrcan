@@ -58,7 +58,7 @@ class QrcanAPI:
 			if noun.startswith(''.join([QrcanAPI.API_BASE, QrcanAPI.DATASOURCES_API_BASE, '/'])):
 				try:
 					dsid = ''.join([self.api_base, noun])
-					_logger.debug('Target data source [%s]' %dsid)
+					#_logger.debug('Target data source [%s]' %dsid)
 					if noun.endswith('/'):
 						dsid = dsid[:-1] # remove the trailing slash
 						self._update_datasource(instream, outstream, headers, dsid) # POST
@@ -119,19 +119,21 @@ class QrcanAPI:
 			raise DatasourceNotExists
 
 	def _sync_datasource(self, outstream, dsid):
+		try:
+			ds = self.datasources[dsid]
+		except KeyError:
+			raise DatasourceNotExists
+					
 		if not ds.is_local():
 			_logger.debug('[%s] is a remote data source ... NOP' %dsid)		
 		else:
 			_logger.debug('Trying to sync data source [%s] ...' %dsid)
-			try:
-				ds = self.datasources[dsid]
-				g = self.store.init_datasource(ds.identify())
-				ds.sync(g)
-				ds.store()
-				self.store.store_datasource(g, ds.identify())
-				outstream.write(ds.describe())
-			except KeyError:
-				raise DatasourceNotExists
+			g = self.store.init_datasource(ds.identify())
+			ds.sync(g)
+			ds.store()
+			self.store.store_datasource(g, ds.identify())
+			outstream.write(ds.describe())
+
 
 	def _query_datasource(self, instream, outstream, headers, dsid):
 		querydata = self._get_formenc_param(instream, headers, 'querydata')

@@ -184,3 +184,9 @@ fieldset label {
 	font-size: 120%;
 	color: #606060;
 }
+
+.change-status-field {
+	text-align: right;
+	font-size: 90%;
+	color: #909090;
+}

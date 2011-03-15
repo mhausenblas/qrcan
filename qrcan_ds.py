@@ -70,11 +70,12 @@ class Datasource:
 			self.file_name = ''.join([store_dir, '/', tmp_id, '.ttl'])
 		self.id = ''.join([self.base_uri, tmp_id])
 		self.name = ''
-		self.updated = datetime.datetime.utcnow()
+		self.updated = self._timestamp_now()
 		self.access_method = Datasource.ACCESS_DOCUMENT
 		self.access_uri = ''
 		self.access_mode = Datasource.MODE_REMOTE
 		self.last_sync = None
+		self.num_triples = 0
 		self.g.bind('void', Datasource.NAMESPACES['void'], True)
 		self.g.bind('dcterms', Datasource.NAMESPACES['dcterms'], True)
 		self.g.bind('qrcan', Datasource.NAMESPACES['qrcan'], True)
@@ -87,10 +88,10 @@ class Datasource:
 	def sync_status(self):
 		"""Returns the synchronisation status of the data source.
 		
-		False if not yet synced, a UTC-based date-time stamp string of last sync otherwise.
+		False if not yet synced, True otherwise.
 		"""
 		if self.last_sync:
-			return str(self.last_sync)
+			return True
 		else:
 			return False
 
@@ -113,13 +114,15 @@ class Datasource:
 								OPTIONAL { ?ds void:dataDump ?dumpURI . } 
 								OPTIONAL { ?ds void:sparqlEndpoint ?sparqlURI . }
 								OPTIONAL { ?ds qrcan:synced ?lastSync . } 
+								OPTIONAL { ?ds void:triples ?numTriples . } 
 						}
 		"""
 		res = self.g.query(querystr, initNs=Datasource.NAMESPACES)
 		for r in res.bindings:
 			if r['ds']: self.id = r['ds']
 			if r['title']: self.name = r['title']
-			if r['modified']: self.updated = r['modified']
+			if r['modified']: self.updated = r['modified'].toPython()
+			#_logger.debug('UPDATED: %s type: %s' %(self.updated, type(self.updated)))
 			try:
 				if r['dumpURI']:
 					self.access_uri = r['dumpURI']
@@ -139,7 +142,14 @@ class Datasource:
 					self.access_mode = Datasource.MODE_LOCAL
 			try:
 				if r['lastSync']:
-					self.last_sync = r['lastSync']
+					self.last_sync = r['lastSync'].toPython()
+				else:
+					self.last_sync = None
+			except KeyError:
+				pass
+			try:
+				if r['numTriples']:
+					self.num_triples = int(r['numTriples'])
 			except KeyError:
 				pass
 	
@@ -154,7 +164,8 @@ class Datasource:
 		"""Updates a description of the data source.
 		"""
 		self.name = name
-		self.updated = datetime.datetime.utcnow()
+		self.updated = self._timestamp_now()
+		_logger.debug('UPDATED SAVE: %s type: %s' %(self.updated, type(self.updated)))
 		self.access_method = access_method
 		self.access_uri = access_uri
 		self.access_mode = access_mode
@@ -171,9 +182,11 @@ class Datasource:
 		if self.sync_status(): # only remember if synced
 			if self.access_mode == Datasource.MODE_LOCAL:
 				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
+				self.g.set((URIRef(self.id), Datasource.NAMESPACES['void']['triples'], Literal(self.num_triples)))
 			else:
 				self.g.remove((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], None))
-		
+				self.g.remove((URIRef(self.id), Datasource.NAMESPACES['void']['triples'], None))
+
 	def describe(self, format = 'json', encoding = 'str'):
 		"""Creates a description of the data source.
 
@@ -181,17 +194,19 @@ class Datasource:
 		'json' produces a JSON object and 'rdf' an RDF/Turtle string.
 		If encoding is set to 'raw', the respective object is returned,
 		if set to 'str', an string-encoded version is returned.  
-		"""
+		"""		
 		if format == 'json':
 			ds = {	'id' : self.id, 
 					'name' : self.name,
-					'updated' : str(self.updated),
+					'updated' : self.updated.isoformat(),
 					'access_method' : self.access_method,
 					'access_uri' : self.access_uri,
 					'access_mode' : self.access_mode
 			}
 			if self.access_mode == Datasource.MODE_LOCAL and self.sync_status():
-				ds['last_sync'] =  str(self.last_sync)
+				ds['last_sync'] =  self.last_sync.isoformat()
+				ds['num_triples'] =  self.num_triples
+			
 			if encoding == 'str':
 				return json.JSONEncoder().encode(ds)
 			else:
@@ -212,8 +227,10 @@ class Datasource:
 		if self.access_mode == Datasource.MODE_LOCAL and self.access_method == Datasource.ACCESS_DOCUMENT: # restrict to RDF documents for now
 			try:
 				self._load_from_file(g)
-				self.last_sync = datetime.datetime.utcnow()
+				self.last_sync = self._timestamp_now()
+				self.num_triples = len(g)
 				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
+				self.g.set((URIRef(self.id), Datasource.NAMESPACES['void']['triples'], Literal(self.num_triples)))
 			except DatasourceLoadError:
 				_logger.debug('Sync failed - not able to load content from remote data source.')
 
@@ -271,6 +288,10 @@ class Datasource:
 			raise DatasourceAccessError
 		#for result in results["results"]["bindings"]:
 		#    print result["label"]["value"]
+		
+	def _timestamp_now(self):
+		now = datetime.datetime.utcnow()
+		return now.replace(microsecond = 0)
 
 if __name__ == '__main__':
 	_logger = logging.getLogger('ds')
