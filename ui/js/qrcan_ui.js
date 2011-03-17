@@ -68,10 +68,19 @@ $(function() {
 		});
 	});
 
-	// query
+	// query data source
 	$("#ds-exec-query").live("click", function () {
 		var dsID = $("#ws-selected-ds a").attr("href");
 		queryDatasource(dsID);
+	});
+	
+	// remove data source
+	$("#ds-delete").live("click", function () {
+		var dsID = $("#ws-selected-ds a").attr("href");
+		var confirmation = confirm('Are you sure that you want to delete the data source ' + dsID + "?");
+		if(confirmation){
+			removeDatasource(dsID);
+		}
 	});
 
 	// access method selection
@@ -171,6 +180,23 @@ function queryDatasource(dsid){
 	});
 }
 
+function removeDatasource(dsid){
+	
+	busy();
+	$.ajax({
+		type: "POST",
+		url: dsid + "/rm",
+		success: function(data){
+			$("#workspace").html("");
+			listDatasources();
+			done();
+		},
+		error:  function(msg){
+			alert(msg);
+		} 
+	});
+}
+
 function selectTab(tabID, dsID) {
 	var tabMap = { 
 		"ws-tab-query" : "forms/ds-query.html",
@@ -184,6 +210,7 @@ function selectTab(tabID, dsID) {
 			// adapt form
 			$("#ws-main .pane-title").html("");
 			$("#ws-main #ds-update").text("Update");
+			$("#ds-delete-field").show();
 		});
 		// set form values
 		$.getJSON(dsID, function(data) {

@@ -163,7 +163,15 @@ class Datasource:
 					self.delta_triples = 0
 			except KeyError:
 				pass
-	
+
+	def remove(self):
+		"""Removes the data source.
+		"""
+		try:
+			os.remove(self.file_name)
+		except OSError:
+			pass
+
 	def store(self):
 		"""Stores the data source description to a VoID file.
 		"""

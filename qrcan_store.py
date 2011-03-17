@@ -59,6 +59,15 @@ class QrcanStore(object):
 			_logger.debug('Dumped data source [%s] into %s' %(graph_uri, file_name))
 		else: # QrcanStore.MODE_EXTERNAL not yet implemented
 			return None
+			
+	def remove_datasource(self, graph_uri):
+		if self.mode == QrcanStore.MODE_INTERNAL:
+			file_name = graph_uri.split('/')[-1]
+			file_name = ''.join([QrcanStore.INTERNAL_CONTENT_DIR, file_name, '.nt'])
+			os.remove(file_name)
+			_logger.debug('Removed dump of data source [%s]' %graph_uri)
+		else: # QrcanStore.MODE_EXTERNAL not yet implemented
+			return None
 
 	def restore_datasource(self, graph, graph_uri):
 		if self.mode == QrcanStore.MODE_INTERNAL:

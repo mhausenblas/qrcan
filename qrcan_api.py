@@ -35,6 +35,8 @@ class QrcanAPI:
 	ALL_DS_NOUN = '/all'
 	SYNC_DS_NOUN ='/sync'
 	QUERY_DS_NOUN ='/query'
+	REMOVE_DS_NOUN ='/rm'
+
 	# Configuration of the data source description store:
 	DATASOURCES_METADATA_BASE = 'datasources/'
 	
@@ -68,6 +70,9 @@ class QrcanAPI:
 					elif noun.endswith(QrcanAPI.QUERY_DS_NOUN):
 						dsid = dsid[:-len(QrcanAPI.QUERY_DS_NOUN)]
 						self._query_datasource(instream, outstream, headers, dsid)  # POST
+					elif noun.endswith(QrcanAPI.REMOVE_DS_NOUN):
+						dsid = dsid[:-len(QrcanAPI.REMOVE_DS_NOUN)]
+						self._remove_datasource(instream, outstream, headers, dsid)  # POST
 					else:
 						self._serve_datasource(outstream, dsid) # GET
 				except DatasourceNotExists:
@@ -149,6 +154,16 @@ class QrcanAPI:
 			res = ds.query(g, querydata['query_str'])
 			for r in res:
 				outstream.write(r)
+		except KeyError:
+			raise DatasourceNotExists
+
+	def _remove_datasource(self, instream, outstream, headers, dsid):
+		_logger.debug('Trying to remove data source [%s] ...' %dsid)
+		try:
+			ds = self.datasources[dsid]
+			self.store.remove_datasource(ds.identify())
+			ds.remove()
+			del self.datasources[dsid]
 		except KeyError:
 			raise DatasourceNotExists
 			

@@ -114,6 +114,10 @@ fieldset label {
 	font-size: 90%;
 }
 
+#ds-delete-field {
+	display: none;	
+}
+
 #ws-tabs {
 	padding: 1em 0.5em 0 1em;	
 }
