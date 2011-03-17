@@ -190,3 +190,15 @@ fieldset label {
 	font-size: 90%;
 	color: #909090;
 }
+
+.lesstriples {
+	margin-left: 1em;
+	font-size: 80%;
+	color: #f00;
+}
+
+.moretriples {
+	margin-left: 1em;
+	font-size: 80%;
+	color: #393;
+}

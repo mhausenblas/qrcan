@@ -222,7 +222,17 @@ function selectTab(tabID, dsID) {
 				$("#ds-num-triples").text("Unknown - remote source or not synced, yet.");
 			}
 			else {
-				$("#ds-num-triples").text(data.num_triples);
+				if(!data.delta_triples || data.delta_triples == 0) {
+					$("#ds-num-triples").text(data.num_triples);
+				}
+				else {
+					if(data.delta_triples < 0) {
+						$("#ds-num-triples").html(data.num_triples + "<span class='lesstriples' title='since last sync'>" + data.delta_triples + "</span>");
+					}
+					else {
+						$("#ds-num-triples").html(data.num_triples + "<span class='moretriples' title='since last sync'>+" + data.delta_triples + "</span>");
+					}
+				}
 			}
 		});
 		return;

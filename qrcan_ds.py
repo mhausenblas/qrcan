@@ -76,6 +76,7 @@ class Datasource:
 		self.access_mode = Datasource.MODE_REMOTE
 		self.last_sync = None
 		self.num_triples = 0
+		self.delta_triples = 0
 		self.g.bind('void', Datasource.NAMESPACES['void'], True)
 		self.g.bind('dcterms', Datasource.NAMESPACES['dcterms'], True)
 		self.g.bind('qrcan', Datasource.NAMESPACES['qrcan'], True)
@@ -115,6 +116,7 @@ class Datasource:
 								OPTIONAL { ?ds void:sparqlEndpoint ?sparqlURI . }
 								OPTIONAL { ?ds qrcan:synced ?lastSync . } 
 								OPTIONAL { ?ds void:triples ?numTriples . } 
+								OPTIONAL { ?ds qrcan:delta ?deltaTriples . } 
 						}
 		"""
 		res = self.g.query(querystr, initNs=Datasource.NAMESPACES)
@@ -150,6 +152,15 @@ class Datasource:
 			try:
 				if r['numTriples']:
 					self.num_triples = int(r['numTriples'])
+				else:
+					self.num_triples = 0
+			except KeyError:
+				pass
+			try:
+				if r['deltaTriples']:
+					self.delta_triples = int(r['deltaTriples'])
+				else:
+					self.delta_triples = 0
 			except KeyError:
 				pass
 	
@@ -183,9 +194,11 @@ class Datasource:
 			if self.access_mode == Datasource.MODE_LOCAL:
 				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
 				self.g.set((URIRef(self.id), Datasource.NAMESPACES['void']['triples'], Literal(self.num_triples)))
+				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['delta'], Literal(self.delta_triples)))
 			else:
 				self.g.remove((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], None))
 				self.g.remove((URIRef(self.id), Datasource.NAMESPACES['void']['triples'], None))
+				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['delta'], None))
 
 	def describe(self, format = 'json', encoding = 'str'):
 		"""Creates a description of the data source.
@@ -206,6 +219,8 @@ class Datasource:
 			if self.access_mode == Datasource.MODE_LOCAL and self.sync_status():
 				ds['last_sync'] =  self.last_sync.isoformat()
 				ds['num_triples'] =  self.num_triples
+				ds['delta_triples'] =  self.delta_triples
+				
 			
 			if encoding == 'str':
 				return json.JSONEncoder().encode(ds)
@@ -228,9 +243,12 @@ class Datasource:
 			try:
 				self._load_from_file(g)
 				self.last_sync = self._timestamp_now()
+				old_num_triples = self.num_triples
 				self.num_triples = len(g)
+				self.delta_triples = self.num_triples - old_num_triples
 				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['synced'], Literal(self.last_sync)))
 				self.g.set((URIRef(self.id), Datasource.NAMESPACES['void']['triples'], Literal(self.num_triples)))
+				self.g.set((URIRef(self.id), Datasource.NAMESPACES['qrcan']['delta'], Literal(self.delta_triples)))
 			except DatasourceLoadError:
 				_logger.debug('Sync failed - not able to load content from remote data source.')
 
