@@ -169,9 +169,26 @@ function queryDatasource(dsid){
 	$.ajax({
 		type: "POST",
 		url: dsid + "/query",
+		dataType: 'json',
 		data: "querydata="+ $.toJSON(querydata),
 		success: function(data){
-			$("#query-result").html(data);
+			var b ="<table class='qresult'><tr>";
+			for(v in data[0]) {
+				var variable = data[0][v];
+				b += "<th>" + variable + "</th>";
+			}
+			b += "</tr>";
+			for(r in data[1]) {
+				var row = data[1][r];
+				b += "<tr>";
+				for(v in data[0]) {
+					var variable = data[0][v];
+					b += "<td>" + row[variable].value + "</td>";
+				}
+				b += "</tr>";
+			}
+			b += "</table>";
+			$("#query-result").html(b);
 			done();
 		},
 		error:  function(msg){

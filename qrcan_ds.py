@@ -85,7 +85,7 @@ class Datasource:
 		"""Returns the ID of the data source as string.
 		"""
 		return str(self.id)
-		
+
 	def sync_status(self):
 		"""Returns the synchronisation status of the data source.
 		
@@ -96,11 +96,15 @@ class Datasource:
 		else:
 			return False
 
+	def is_local(self):
+		if self.access_mode == Datasource.MODE_LOCAL: return True
+		else: return False
+
 	def location(self):
 		"""Returns the path to the VoID file where the data source is made persistent.
 		"""
 		return self.file_name
-		
+
 	def load(self, file_name):
 		"""Loads the data source description from a VoID file.
 		"""
@@ -260,32 +264,61 @@ class Datasource:
 			except DatasourceLoadError:
 				_logger.debug('Sync failed - not able to load content from remote data source.')
 
-	# TODO: make the result formats uniform (separate class, simplified SPARQL/JSON)
 	def query(self, g, query_str):
 		"""Queries a data sources using a given graph.
 		"""
+		res = None
 		try:
 			if self.access_method == Datasource.ACCESS_DOCUMENT: # the data source is an RDF document
 				if self.access_mode == Datasource.MODE_LOCAL: # it's a local data source, hence we assume it has already been synced
 					if self.sync_status():
-						res = g.query(query_str).bindings
+						res = g.query(query_str)
 					else:
 						raise DatasourceNotSyncedError
 				else: # Datasource.MODE_REMOTE
 					tmp = Graph()
 					self._load_from_file(tmp)
-					res = tmp.query(query_str).bindings
+					res = tmp.query(query_str)
 			else: # Datasource.ACCESS_SPARQL_ENDPOINT -> the data source is a SPARQL Endpoint, currently no disctinction between local and remote
 				res = self._query_SPARQL_Endpoint(self.access_uri, query_str)
 		except DatasourceAccessError, d:
 			_logger.debug('Query failed - not able to access data source: %s' %type(d))
 			return None
-		return res
+		return self._format_results(res)
+		
+	def _format_results(self, results):
+		final_results = list()
+		variables = list()
+		bindings = list()
+		if results:
+			try:
+				if results["results"]["bindings"]: # we have a SPARQL result from SPARQLWrapper
+					variables = results["head"]["vars"]
+					bindings = results["results"]["bindings"]
+			except TypeError: # Graph-based query result from RDFlib
+				for v in results.vars:
+					variables.append(str(v))
+				for res in results.bindings:
+					field =  dict()
+					for key in res.keys():
+						r = res[key]
+						entry = dict()
+						if type(r) == rdflib.term.URIRef:
+							entry['type'] = 'uri'
+						if type(r) == rdflib.term.Literal:
+							entry['type'] = 'literal'
+						if type(r) == rdflib.term.BNode:
+							entry['type'] = 'bnode'
+						entry['value'] = str(r)
+						field[str(key)] = entry
+					bindings.append(field)
+					#_logger.debug('type= %s key=%s entry=%s' %(type(r), key, entry))
+			final_results.append(variables)
+			final_results.append(bindings)
+			return json.JSONEncoder().encode(final_results)
+		else:
+			return None
 
-	def is_local(self):
-		if self.access_mode == Datasource.MODE_LOCAL: return True
-		else: return False
-			
 	def _load_from_file(self, g):
 		try:
 			_logger.debug('Trying to load %s into data source [%s]' %(self.access_uri, str(self.id)))
@@ -307,13 +340,11 @@ class Datasource:
 			sparql = SPARQLWrapper(endpoint_URI)
 			sparql.setQuery(query_str)
 			sparql.setReturnFormat(JSON)
-			results = sparql.query()
+			results = sparql.query().convert()
 			return results
 		except Exception, e:
 			_logger.debug('SPARQL access failed - %s' %e)
 			raise DatasourceAccessError
-		#for result in results["results"]["bindings"]:
-		#    print result["label"]["value"]
 		
 	def _timestamp_now(self):
 		now = datetime.datetime.utcnow()
@@ -326,34 +357,33 @@ if __name__ == '__main__':
 	_handler.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
 	_logger.addHandler(_handler)
 
-	q = """	SELECT ?s ?p
+	q = """	SELECT ?s ?p ?o
 					WHERE { 
 						?s ?p ?o .
 					}
-					LIMIT 3
+					LIMIT 2
 	"""
-
 	dslist = { 	'RDF/XML' : 'examples/statistics-ireland.rdf',
 			#	'NTriple' : 'examples/business-data.gov.uk.nt',
 			#	'Turtle'  : 'examples/dbpedia-ireland.ttl',
 			#	'RDFa'    : 'examples/cygri-foaf.html'
 			}
 	
-	for s in dslist.keys():
-		print('='*50)
-		print('Creating local data source: %s' %s)
-		g = Graph()
-		ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
-		ds.update(s, Datasource.ACCESS_DOCUMENT, dslist[s], Datasource.MODE_LOCAL)
-		ds.sync(g)
-		res = ds.query(g, q)
-		for r in res:
-			print(r)
-	
+	#for s in dslist.keys():
 	g = Graph()
 	ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
-#	ds.update('SPARQL test', Datasource.ACCESS_SPARQL_ENDPOINT, 'http://acm.rkbexplorer.com/sparql/', Datasource.MODE_REMOTE)
-	ds.update('SPARQL test', Datasource.ACCESS_SPARQL_ENDPOINT, 'http://dbpedia.org/sparql', Datasource.MODE_REMOTE)
+
+	ds.load('datasources/2a0df45e-4e59-11e0-a77e-002332baf36c.ttl')
+	ds.sync(g)
 	res = ds.query(g, q)
-	for r in res:
-		print(r)
+	#for r in res:
+	print(res)
+	print('='*50)
+	
+	ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
+	ds.load('datasources/e2bd7c42-4dad-11e0-9d24-002332baf36c.ttl')
+	res = ds.query(g, q)
+	#for r in res:
+	print(res)
+
+	
