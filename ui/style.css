@@ -193,6 +193,10 @@ fieldset label {
 	color: #606060;
 }
 
+.ds-all-selection-field {
+	margin: 0.5em;
+}
+
 .change-status-field {
 	text-align: right;
 	font-size: 90%;

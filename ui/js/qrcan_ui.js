@@ -20,7 +20,7 @@ $(function() {
 		});
 	});
 	
-	$("#config").click(function () {		
+	$("#config").click(function () {
 		$.get("forms/config.html", function(data) {
 			$("#workspace").html(data);
 		});
@@ -229,8 +229,7 @@ function removeDatasource(dsid){
 function selectTab(tabID, dsID) {
 	var tabMap = { 
 		"ws-tab-query" : "forms/ds-query.html",
-		"ws-tab-schema" : "forms/ds-schema.html",
-		"ws-tab-export" : "forms/ds-export.html"
+		"ws-tab-schema" : "forms/ds-schema.html"
 	}
 
 	if(tabID == "ws-tab-admin") {
@@ -266,10 +265,9 @@ function selectTab(tabID, dsID) {
 		});
 		// set form values
 		$.getJSON(dsID, function(data) {
-			// TODO: use http://www.datejs.com/ for pretty datetime formatting
 			if(data.access_mode == 'local') {
 				$("#ds-last-sync-field").show();
-				$("#ds-last-sync").text(data.last_sync);
+				$("#ds-last-sync").text(dateFormat(data.last_sync));
 			}
 			else {
 				$("#ds-last-sync-field").hide();
@@ -292,6 +290,22 @@ function selectTab(tabID, dsID) {
 			}
 		});
 		return;
+	}
+	
+	if(tabID == "ws-tab-export"){
+		$.get("forms/ds-export.html", function(data) {
+			$("#ws-main").html(data);
+		});
+		$.getJSON("../api/datasource/all", function(data) {
+			var b = "";
+			if(data){
+				for(i in data) {
+					var ds = data[i];
+					b += "<div class='ds-all-selection-field'><input type='checkbox' value='" + ds["id"] + "' />" + ds["name"] + "</div>";
+				}
+				$("#ds-all-selection").html(b);
+			}
+		});
 	}
 	
 	$.get(tabMap[tabID], function(data) {
