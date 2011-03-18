@@ -7,9 +7,15 @@ $(function() {
 		$("#workspace").html("");
 		listDatasources();
 	});
-	
+
 	$("#ds-add").click(function () {
 		$.get("forms/ds-add.html", function(data) {
+			$("#workspace").html(data);
+		});
+	});
+	
+	$("#all-ds").click(function () {
+		$.get("forms/all-ds-work.html", function(data) {
 			$("#workspace").html(data);
 		});
 	});
@@ -113,11 +119,14 @@ $(function() {
 function listDatasources(){
 	$.getJSON("../api/datasource/all", function(data) {
 		var b = "";
-		for(i in data) {
-			var ds = data[i];
-			b += "<div class='datasource' resource='" + ds["id"] + "'><img src='img/ds.png' alt='Data source ...' title='Data source ...' /> " + ds["name"] + "</div>";
+		if(data){
+			for(i in data) {
+				var ds = data[i];
+				b += "<div class='datasource' resource='" + ds["id"] + "'><img src='img/ds.png' alt='Data source ...' title='Data source ...' /> " + ds["name"] + "</div>";
+			}
+			$("#datasources").html(b);
+			if(data[0]) $("#all-ds").show();
 		}
-		$("#datasources").html(b);
 	});
 }
 

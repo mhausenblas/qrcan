@@ -107,6 +107,10 @@ fieldset label {
 	font-family: Arial, sans-serif;
 }
 
+#all-ds {
+	display: none;	
+}
+
 #ds-id {
 	display: none;
 	color: #d0d0d0;
