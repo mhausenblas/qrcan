@@ -172,22 +172,25 @@ function queryDatasource(dsid){
 		dataType: 'json',
 		data: "querydata="+ $.toJSON(querydata),
 		success: function(data){
-			var b ="<table class='qresult'><tr>";
-			for(v in data[0]) {
-				var variable = data[0][v];
-				b += "<th>" + variable + "</th>";
-			}
-			b += "</tr>";
-			for(r in data[1]) {
-				var row = data[1][r];
-				b += "<tr>";
+			var b = "No results found";
+			if(data[0] != 'none') {
+				b ="<table class='qresult'><tr>";
 				for(v in data[0]) {
 					var variable = data[0][v];
-					b += "<td>" + row[variable].value + "</td>";
+					b += "<th>" + variable + "</th>";
 				}
 				b += "</tr>";
+				for(r in data[1]) {
+					var row = data[1][r];
+					b += "<tr>";
+					for(v in data[0]) {
+						var variable = data[0][v];
+						b += "<td>" + row[variable].value + "</td>";
+					}
+					b += "</tr>";
+				}
+				b += "</table>";
 			}
-			b += "</table>";
 			$("#query-result").html(b);
 			done();
 		},

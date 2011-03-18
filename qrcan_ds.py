@@ -315,9 +315,9 @@ class Datasource:
 					#_logger.debug('type= %s key=%s entry=%s' %(type(r), key, entry))
 			final_results.append(variables)
 			final_results.append(bindings)
-			return json.JSONEncoder().encode(final_results)
 		else:
-			return None
+			final_results.append("none")
+		return json.JSONEncoder().encode(final_results)
 
 	def _load_from_file(self, g):
 		try:
@@ -357,10 +357,7 @@ if __name__ == '__main__':
 	_handler.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
 	_logger.addHandler(_handler)
 
-	q = """	SELECT ?s ?p ?o
-					WHERE { 
-						?s ?p ?o .
-					}
+	q = """	SELECT ?who ?whom WHERE { ?who <http://xmlns.com/foaf/0.1/knows> ?whom . }
 					LIMIT 2
 	"""
 	dslist = { 	'RDF/XML' : 'examples/statistics-ireland.rdf',
@@ -380,10 +377,10 @@ if __name__ == '__main__':
 	print(res)
 	print('='*50)
 	
-	ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
-	ds.load('datasources/e2bd7c42-4dad-11e0-9d24-002332baf36c.ttl')
-	res = ds.query(g, q)
+	#ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
+	#ds.load('datasources/e2bd7c42-4dad-11e0-9d24-002332baf36c.ttl')
+	#res = ds.query(g, q)
 	#for r in res:
-	print(res)
+	#print(res)
 
 	

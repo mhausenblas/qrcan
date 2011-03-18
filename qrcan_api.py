@@ -152,8 +152,7 @@ class QrcanAPI:
 					self.store.restore_datasource(g, ds.identify())
 			_logger.debug('Got query string: %s' %querydata['query_str'])
 			res = ds.query(g, querydata['query_str'])
-			for r in res:
-				outstream.write(r)
+			outstream.write(res)
 		except KeyError:
 			raise DatasourceNotExists
 
