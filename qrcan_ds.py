@@ -264,7 +264,7 @@ class Datasource:
 			except DatasourceLoadError:
 				_logger.debug('Sync failed - not able to load content from remote data source.')
 
-	def query(self, g, query_str):
+	def query(self, g, query_str, encoding = 'str'):
 		"""Queries a data sources using a given graph.
 		"""
 		res = None
@@ -284,9 +284,35 @@ class Datasource:
 		except DatasourceAccessError, d:
 			_logger.debug('Query failed - not able to access data source: %s' %type(d))
 			return None
-		return self._format_results(res)
+		return self._format_results(res, encoding)
+
+	def schema(self, g):
+		"""Creates schema information about a data sources using a given graph.
+		"""
+		res = self.query(g, """
+		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+		SELECT ?o WHERE { 
+		?s rdf:type ?o .  
+		FILTER (isURI(?s))
+		} 
+		""",
+		encoding = 'raw')
 		
-	def _format_results(self, results):
+		etypes = list()
+		schemainfo = list()
+		for r in res[1]:
+			etypes.append(r['o']['value'])
+		types = list(set(etypes)) # remove duplicates
+		
+		for t in types:
+			atype =  dict()
+			atype[etypes.count(t)] = t
+			schemainfo.append(atype)
+		
+		return json.JSONEncoder().encode(sorted(schemainfo, reverse=True))
+
+	def _format_results(self, results, encoding = 'str'):
 		final_results = list()
 		variables = list()
 		bindings = list()
@@ -317,7 +343,11 @@ class Datasource:
 			final_results.append(bindings)
 		else:
 			final_results.append("none")
-		return json.JSONEncoder().encode(final_results)
+		
+		if encoding == 'str':
+			return json.JSONEncoder().encode(final_results)
+		else:
+			return final_results	
 
 	def _load_from_file(self, g):
 		try:

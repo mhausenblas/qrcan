@@ -227,34 +227,11 @@ function removeDatasource(dsid){
 }
 
 function selectTab(tabID, dsID) {
-	var tabMap = { 
-		"ws-tab-query" : "forms/ds-query.html",
-		"ws-tab-schema" : "forms/ds-schema.html"
-	}
 
-	if(tabID == "ws-tab-admin") {
-		$.get("forms/ds-add.html", function(data) {
+	// data source level:
+	if(tabID == "ws-tab-query") {
+		$.get("forms/ds-query.html", function(data) {
 			$("#ws-main").html(data);
-			// adapt form
-			$("#ws-main .pane-title").html("");
-			$("#ws-main #ds-update").text("Update");
-			$("#ds-delete-field").show();
-		});
-		// set form values
-		$.getJSON(dsID, function(data) {
-			$("#ws-selected-ds").html("<a href='" + data.id + "'>" + data.name + "</a>");
-			$("#ds-id").text(data.id);
-			$("#ds-name").val(data.name);
-			$("#ds-access option[value='" + data.access_method + "']").attr("selected", true);
- 			$("#ds-access-uri").val(data.access_uri);
-			$("input:radio[name='ds-mode'][value='" + data.access_mode +"']").attr('checked', true);
-			if(data.access_method == 'sparql') {
-				$("#ds-mode-field").hide('fast');
-			}
-			else {
-				$("#ds-mode-field").show('fast');
-			}
-			$("#ds-last-update").text("Last change: " + dateFormat(data.updated));
 		});
 		return;
 	}
@@ -291,6 +268,68 @@ function selectTab(tabID, dsID) {
 		});
 		return;
 	}
+
+	if(tabID == "ws-tab-schema") {
+		busy();
+		
+		$.get("forms/ds-schema.html", function(data) {
+			$("#ws-main").html(data);
+			/*
+			var paper = Raphael("ds-entity-overview", 400, 300);
+			var circle = paper.circle(50, 50, 40);
+			circle.attr("fill", "#fefefe");
+			circle.attr("stroke", "#22e");
+			paper.text(50, 50, "X");
+			*/
+		});
+		$.getJSON(dsID + "/schema", function(data) {
+			var b = "No schema info available";
+			if(data) {
+				b ="<table class='qresult'><tr><th>Entity type</th></tr>";
+				for(var r in data) {
+					var row = data[r];
+					for(var c in row) {
+						b += "<tr>";
+						b += "<td>" + row[c] + " (" + c + ")</td>";
+						b += "</tr>";
+					}
+				}
+				b += "</table>";
+			}
+			$("#ds-entity-overview").html(b);
+			done();
+		});
+		return;
+	}
+
+	if(tabID == "ws-tab-admin") {
+		$.get("forms/ds-add.html", function(data) {
+			$("#ws-main").html(data);
+			// adapt form
+			$("#ws-main .pane-title").html("");
+			$("#ws-main #ds-update").text("Update");
+			$("#ds-delete-field").show();
+		});
+		// set form values
+		$.getJSON(dsID, function(data) {
+			$("#ws-selected-ds").html("<a href='" + data.id + "'>" + data.name + "</a>");
+			$("#ds-id").text(data.id);
+			$("#ds-name").val(data.name);
+			$("#ds-access option[value='" + data.access_method + "']").attr("selected", true);
+ 			$("#ds-access-uri").val(data.access_uri);
+			$("input:radio[name='ds-mode'][value='" + data.access_mode +"']").attr('checked', true);
+			if(data.access_method == 'sparql') {
+				$("#ds-mode-field").hide('fast');
+			}
+			else {
+				$("#ds-mode-field").show('fast');
+			}
+			$("#ds-last-update").text("Last change: " + dateFormat(data.updated));
+		});
+		return;
+	}
+
+	// all data sources:
 	
 	if(tabID == "ws-tab-export"){
 		$.get("forms/ds-export.html", function(data) {
@@ -306,11 +345,9 @@ function selectTab(tabID, dsID) {
 				$("#ds-all-selection").html(b);
 			}
 		});
+		return;
 	}
-	
-	$.get(tabMap[tabID], function(data) {
-		$("#ws-main").html(data);
-	});
+
 }
 
 function busy(){

@@ -35,6 +35,7 @@ class QrcanAPI:
 	ALL_DS_NOUN = '/all'
 	SYNC_DS_NOUN ='/sync'
 	QUERY_DS_NOUN ='/query'
+	SCHEMA_DS_NOUN ='/schema'
 	REMOVE_DS_NOUN ='/rm'
 
 	# Configuration of the data source description store:
@@ -70,6 +71,9 @@ class QrcanAPI:
 					elif noun.endswith(QrcanAPI.QUERY_DS_NOUN):
 						dsid = dsid[:-len(QrcanAPI.QUERY_DS_NOUN)]
 						self._query_datasource(instream, outstream, headers, dsid)  # POST
+					elif noun.endswith(QrcanAPI.SCHEMA_DS_NOUN):
+						dsid = dsid[:-len(QrcanAPI.SCHEMA_DS_NOUN)]
+						self._schema_datasource(instream, outstream, headers, dsid)  # GET
 					elif noun.endswith(QrcanAPI.REMOVE_DS_NOUN):
 						dsid = dsid[:-len(QrcanAPI.REMOVE_DS_NOUN)]
 						self._remove_datasource(instream, outstream, headers, dsid)  # POST
@@ -139,7 +143,6 @@ class QrcanAPI:
 			self.store.store_datasource(g, ds.identify())
 			outstream.write(ds.describe())
 
-
 	def _query_datasource(self, instream, outstream, headers, dsid):
 		querydata = self._get_formenc_param(instream, headers, 'querydata')
 		_logger.debug('Trying to query data source [%s] ...' %dsid)
@@ -152,6 +155,20 @@ class QrcanAPI:
 					self.store.restore_datasource(g, ds.identify())
 			_logger.debug('Got query string: %s' %querydata['query_str'])
 			res = ds.query(g, querydata['query_str'])
+			outstream.write(res)
+		except KeyError:
+			raise DatasourceNotExists
+
+	def _schema_datasource(self, instream, outstream, headers, dsid):
+		_logger.debug('Trying to get schema info for data source [%s] ...' %dsid)
+		try:
+			ds = self.datasources[dsid]
+			g = None
+			if ds.is_local():
+				g = self.store.init_datasource(ds.identify())
+				if not self.store.is_datasource_available(ds.identify()):
+					self.store.restore_datasource(g, ds.identify())
+			res = ds.schema(g)
 			outstream.write(res)
 		except KeyError:
 			raise DatasourceNotExists
