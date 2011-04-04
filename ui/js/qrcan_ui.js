@@ -85,6 +85,11 @@ $(function() {
 		var typeURI = $(this).attr("resource");
 		var dsID = $(this).parent().attr("resource");
 		//alert( dsID + " - " + typeURI);
+		$("table.sresult td").each(function() {
+			$(this).removeClass("active-selection");
+		});
+		
+		$(this).addClass("active-selection");
 		sampleDatasource(dsID, typeURI);
 	});
 	
@@ -231,32 +236,15 @@ function sampleDatasource(dsid, turi){
 		success: function(data){
 			var b = "No samples found.";
 			if(data) {
-				var paper = Raphael("ds-entity-selection", 600, 400);
-				var scircle = paper.circle(100, 100, 20);
-				var ocircle = paper.circle(300, 100, 20);
-
-				scircle.attr("fill", "#e0e0e0");
-				scircle.attr("stroke", "#22e");
-				ocircle.attr("fill", "#e0e0e0");
-				ocircle.attr("stroke", "#22e");
-				paper.text(100, 130, turi);
-				
-				paper.path("M120 100L280 100");
-				paper.path("M280 100L275 95");
-				paper.path("M275 95L275 105");
-				paper.path("M275 105L280 100");
-
+				b = "";
 				for(var r in data) {
 					var row = data[r];
 					for(var c in row) {
-						paper.text(200, 60, c);
-						paper.text(300, 130, row[c]);
-						break;
+						b += "<div class='ds-entity-sample-details'> [ " + c +" ]&rarr; " + row[c] + "</div>";
 					}
-					break;
 				}
 			}
-			//$("#ds-entity-selection").html(b);
+			$("#ds-entity-selection").html(b);
 			done();
 		},
 		error:  function(msg){
@@ -340,7 +328,7 @@ function selectTab(tabID, dsID) {
 					var row = data[r];
 					for(var c in row) {
 						b += "<tr resource='" + dsID +"'>";
-						b += "<td class= 'sampletype' resource='" + row[c] +"'>" + row[c] + " (" + c + ")</td>";
+						b += "<td class='sampletype' resource='" + row[c] +"'>" + row[c] + " (" + c + ")</td>";
 						b += "</tr>";
 					}
 				}

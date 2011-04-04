@@ -119,10 +119,14 @@ fieldset label {
 }
 
 #ds-delete-field {
-	display: none;	
+	display: none;
 }
 
 #ds-entity-overview {
+}
+
+#ds-entity-selection {
+	margin: 0.5em 0 0 1em;
 }
 
 #ws-tabs {
@@ -146,6 +150,7 @@ fieldset label {
 	color: #606060;
 	font-size: 90%;
 	width: 60%;
+	clear: left;
 }
 
 .cmdbar {
@@ -191,6 +196,10 @@ fieldset label {
 	font-weight: bold;
 }
 
+.active-selection {
+	font-weight: bold;
+}
+
 .status-field {
 	font-size: 120%;
 	color: #606060;
@@ -221,4 +230,10 @@ fieldset label {
 .sampletype {
 	cursor: pointer;
 	padding: 0.5em;
+}
+
+.ds-entity-sample-details {
+	padding: 0.5em 0 0 1em;
+	font-size: 90%;
+	color: #060606;
 }
