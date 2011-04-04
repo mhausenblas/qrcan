@@ -80,6 +80,14 @@ $(function() {
 		queryDatasource(dsID);
 	});
 	
+	// schema sample for data source
+	$("table.sresult td").live("click", function () {
+		var typeURI = $(this).attr("resource");
+		var dsID = $(this).parent().attr("resource");
+		//alert( dsID + " - " + typeURI);
+		sampleDatasource(dsID, typeURI);
+	});
+	
 	// remove data source
 	$("#ds-delete").live("click", function () {
 		var dsID = $("#ws-selected-ds a").attr("href");
@@ -209,6 +217,55 @@ function queryDatasource(dsid){
 	});
 }
 
+function sampleDatasource(dsid, turi){
+	var sampledata = {
+		type_uri : turi
+	};
+	
+	busy();
+	$.ajax({
+		type: "POST",
+		url: dsid + "/schema",
+		dataType: 'json',
+		data: "sampledata="+ $.toJSON(sampledata),
+		success: function(data){
+			var b = "No samples found.";
+			if(data) {
+				var paper = Raphael("ds-entity-selection", 600, 400);
+				var scircle = paper.circle(100, 100, 20);
+				var ocircle = paper.circle(300, 100, 20);
+
+				scircle.attr("fill", "#e0e0e0");
+				scircle.attr("stroke", "#22e");
+				ocircle.attr("fill", "#e0e0e0");
+				ocircle.attr("stroke", "#22e");
+				paper.text(100, 130, turi);
+				
+				paper.path("M120 100L280 100");
+				paper.path("M280 100L275 95");
+				paper.path("M275 95L275 105");
+				paper.path("M275 105L280 100");
+
+				for(var r in data) {
+					var row = data[r];
+					for(var c in row) {
+						paper.text(200, 60, c);
+						paper.text(300, 130, row[c]);
+						break;
+					}
+					break;
+				}
+			}
+			//$("#ds-entity-selection").html(b);
+			done();
+		},
+		error:  function(msg){
+			alert(msg);
+		} 
+	});
+}
+
+
 function removeDatasource(dsid){
 	
 	busy();
@@ -274,23 +331,16 @@ function selectTab(tabID, dsID) {
 		
 		$.get("forms/ds-schema.html", function(data) {
 			$("#ws-main").html(data);
-			/*
-			var paper = Raphael("ds-entity-overview", 400, 300);
-			var circle = paper.circle(50, 50, 40);
-			circle.attr("fill", "#fefefe");
-			circle.attr("stroke", "#22e");
-			paper.text(50, 50, "X");
-			*/
 		});
 		$.getJSON(dsID + "/schema", function(data) {
 			var b = "No schema info available";
 			if(data) {
-				b ="<table class='qresult'><tr><th>Entity type</th></tr>";
+				b ="<table class='sresult'><tr><th>Entity type</th></tr>";
 				for(var r in data) {
 					var row = data[r];
 					for(var c in row) {
-						b += "<tr>";
-						b += "<td>" + row[c] + " (" + c + ")</td>";
+						b += "<tr resource='" + dsID +"'>";
+						b += "<td class= 'sampletype' resource='" + row[c] +"'>" + row[c] + " (" + c + ")</td>";
 						b += "</tr>";
 					}
 				}

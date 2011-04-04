@@ -73,7 +73,7 @@ class QrcanAPI:
 						self._query_datasource(instream, outstream, headers, dsid)  # POST
 					elif noun.endswith(QrcanAPI.SCHEMA_DS_NOUN):
 						dsid = dsid[:-len(QrcanAPI.SCHEMA_DS_NOUN)]
-						self._schema_datasource(instream, outstream, headers, dsid)  # GET
+						self._schema_datasource(instream, outstream, headers, dsid)  # GET/POST
 					elif noun.endswith(QrcanAPI.REMOVE_DS_NOUN):
 						dsid = dsid[:-len(QrcanAPI.REMOVE_DS_NOUN)]
 						self._remove_datasource(instream, outstream, headers, dsid)  # POST
@@ -160,7 +160,8 @@ class QrcanAPI:
 			raise DatasourceNotExists
 
 	def _schema_datasource(self, instream, outstream, headers, dsid):
-		_logger.debug('Trying to get schema info for data source [%s] ...' %dsid)
+		sampledata = self._get_formenc_param(instream, headers, 'sampledata')
+		
 		try:
 			ds = self.datasources[dsid]
 			g = None
@@ -168,7 +169,14 @@ class QrcanAPI:
 				g = self.store.init_datasource(ds.identify())
 				if not self.store.is_datasource_available(ds.identify()):
 					self.store.restore_datasource(g, ds.identify())
-			res = ds.schema(g)
+			
+			if sampledata:
+				_logger.debug('Trying to get type sample for type [%s] in data source [%s] ...' %(sampledata['type_uri'], dsid))
+				res = ds.type_sample(g, sampledata['type_uri'])
+			else:
+				_logger.debug('Trying to get schema info for data source [%s] ...' %dsid)
+				res = ds.schema(g)
+		
 			outstream.write(res)
 		except KeyError:
 			raise DatasourceNotExists
@@ -196,7 +204,10 @@ class QrcanAPI:
 				raise DatasourceNotExists
 
 	def _get_formenc_param(self, instream, headers, param):
-		encparams = instream.read(int(headers.getheader('content-length')))
+		try:
+			encparams = instream.read(int(headers.getheader('content-length')))
+		except TypeError:
+			return None	
 		params = cgi.parse_qs(encparams)
 		if params[param]:
 			params = json.JSONDecoder().decode(params[param][0])

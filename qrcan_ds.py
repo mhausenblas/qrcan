@@ -288,6 +288,8 @@ class Datasource:
 
 	def schema(self, g):
 		"""Creates schema information about a data sources using a given graph.
+		
+		The schema info consists of a list of classes (from rdf:type, restricted to subjects with URIs) in descending order of occurrence. 
 		"""
 		res = self.query(g, """
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -311,6 +313,29 @@ class Datasource:
 			schemainfo.append(atype)
 		
 		return json.JSONEncoder().encode(sorted(schemainfo, reverse=True))
+
+	def type_sample(self, g, turi):
+		"""Creates schema information about an entity with a certain type using a given graph.
+		"""
+		res = self.query(g, 'SELECT ?s WHERE { ?s a <%s> . } LIMIT 1' % turi, encoding = 'raw')
+
+		for r in res[1]:
+			sample_uri = str(r['s']['value'])
+
+		res = self.query(g, 'SELECT ?p ?o WHERE { <%s> ?p ?o . }' % sample_uri, encoding = 'raw')
+
+		samples = list()
+		prop_list = list()
+		for r in res[1]:
+			sample_prop = str(r['p']['value'])
+			if not sample_prop in prop_list:
+				prop_list.append(sample_prop)
+				asample =  dict()
+				asample[sample_prop] = r['o']['value']
+				samples.append(asample)
+
+		return json.JSONEncoder().encode(samples)
+
 
 	def _format_results(self, results, encoding = 'str'):
 		final_results = list()
@@ -402,10 +427,13 @@ if __name__ == '__main__':
 
 	ds.load('datasources/2a0df45e-4e59-11e0-a77e-002332baf36c.ttl')
 	ds.sync(g)
-	res = ds.query(g, q)
-	#for r in res:
+	res = ds.schema(g)
 	print(res)
 	print('='*50)
+
+	res = ds.type_sample(g, 'http://xmlns.com/foaf/0.1/Person')
+	#for r in res:
+	print(res)
 	
 	#ds = Datasource('http://localhost:6969/api/datasource/', 'datasources/')
 	#ds.load('datasources/e2bd7c42-4dad-11e0-9d24-002332baf36c.ttl')

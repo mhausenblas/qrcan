@@ -122,6 +122,9 @@ fieldset label {
 	display: none;	
 }
 
+#ds-entity-overview {
+}
+
 #ws-tabs {
 	padding: 1em 0.5em 0 1em;	
 }
@@ -213,4 +216,9 @@ fieldset label {
 	margin-left: 1em;
 	font-size: 80%;
 	color: #393;
+}
+
+.sampletype {
+	cursor: pointer;
+	padding: 0.5em;
 }
