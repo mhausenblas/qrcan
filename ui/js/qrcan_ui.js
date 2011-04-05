@@ -4,23 +4,35 @@ $(function() {
 	/* menu */
 	// cmd buttons
 	$("#ds-refresh").click(function () {
+		$(".datasource").each(function() {
+			$(this).removeClass("active-datasource");
+		});
 		$("#workspace").html("");
 		listDatasources();
 	});
 
 	$("#ds-add").click(function () {
+		$(".datasource").each(function() {
+			$(this).removeClass("active-datasource");
+		});
 		$.get("forms/ds-add.html", function(data) {
 			$("#workspace").html(data);
 		});
 	});
 	
 	$("#all-ds").click(function () {
+		$(".datasource").each(function() {
+			$(this).removeClass("active-datasource");
+		});
 		$.get("forms/all-ds-work.html", function(data) {
 			$("#workspace").html(data);
 		});
 	});
 	
 	$("#config").click(function () {
+		$(".datasource").each(function() {
+			$(this).removeClass("active-datasource");
+		});
 		$.get("forms/config.html", function(data) {
 			$("#workspace").html(data);
 		});
@@ -30,6 +42,12 @@ $(function() {
 	$(".datasource").live("click", function() {
 		var dsID = $(this).attr("resource");
 		var dsTitle = $(this).text();
+		
+		$(".datasource").each(function() {
+			$(this).removeClass("active-datasource");
+		});
+		$(this).addClass("active-datasource");
+		
 		$.get("forms/ds-work.html", function(data) {
 			$("#workspace").html(data);
 			$("#ws-selected-ds").html("<a href='" + dsID + "'>" + dsTitle + "</a>");

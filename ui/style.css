@@ -79,7 +79,9 @@ fieldset label {
 	margin: 0;
 	padding: 0 0 0 0.5em;
 	background: #e3e3ff;
-	border: 1px solid #c0c0e0;
+	border-top: 1px solid #c0c0e0;
+	border-left: 1px solid #c0c0e0;
+	border-right: 1px solid #c0c0e0;
 	-moz-border-radius: 2px 2px 2px 2px;
 	-webkit-border-radius: 2px 2px 2px 2px;
 }
@@ -96,9 +98,11 @@ fieldset label {
 }
 
 #datasources {
-	padding: 1em;
+	padding: 1em 0 1em 1em;
 	color: #e0e0e0;
 	font-size: 10pt;
+	background: #e3e3ff;
+	border-bottom: 1px solid #c0c0e0;
 }
 
 #ds-form {
@@ -167,6 +171,11 @@ fieldset label {
 	cursor: pointer;
 	color: #000;
 	margin: 0.5em 0 0 0;
+	padding: 0.2em;
+}
+
+.active-datasource {
+	background: #fff;
 }
 
 .ws-ds {
