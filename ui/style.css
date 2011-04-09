@@ -54,6 +54,13 @@ fieldset label {
 	left: 5px;
 }
 
+#head {
+	background: #f0f0f0;
+	border: 1px solid #c0c0e0;
+	-moz-border-radius: 2px 2px 2px 2px;
+	-webkit-border-radius: 2px 2px 2px 2px;
+}
+
 #header {
 	padding: 0.2em 0.5em 0.2em 0.2em;
 	background: #f0f0f0;
@@ -76,19 +83,17 @@ fieldset label {
 
 #control h2 {
 	font-size: 16pt;
+	color: #000;
+	text-shadow: 0 1px 0 #fff;
 	margin: 0;
 	padding: 0 0 0 0.5em;
 	background: #e3e3ff;
-	border-top: 1px solid #c0c0e0;
-	border-left: 1px solid #c0c0e0;
-	border-right: 1px solid #c0c0e0;
-	-moz-border-radius: 2px 2px 2px 2px;
-	-webkit-border-radius: 2px 2px 2px 2px;
+	border-bottom: 1px solid #fff;
 }
 
 #cmds {
 	border-bottom: 1px solid #efefef;
-	padding: 0;
+	padding: 5px 5px 0 0;
 	text-align: right;
 }
 
@@ -143,9 +148,11 @@ fieldset label {
 }
 
 .cmdbtn {
-	border: 1px solid #f0f0f0;
+	border: 1px solid #c0c0c0;
 	margin: 0.2em 0 0 0.1em;
-	padding: 0.1em;
+	padding: 0.2em;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
 }
 
 .fnote {
@@ -176,6 +183,8 @@ fieldset label {
 
 .active-datasource {
 	background: #fff;
+	-moz-border-radius: 4px 0 0 4px;
+	-webkit-border-radius: 4px 0 0 4px;
 }
 
 .ws-ds {

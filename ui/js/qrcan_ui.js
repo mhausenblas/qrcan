@@ -140,9 +140,9 @@ $(function() {
 	});
 	
 	$(".cmdbtn").mouseover(function () {
-		$(this).css("border", "1px solid #c0c0e0");
+		$(this).css("border", "1px solid #fff");
 	}).mouseout(function(){
-		$(this).css("border", "1px solid #f0f0f0");
+		$(this).css("border", "1px solid #c0c0c0");
 	});
 });
 
