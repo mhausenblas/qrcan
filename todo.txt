@@ -1,0 +1,96 @@
+git push origin master
+git commit -a -m"update"
+python qrcan_server.py 
+----
+
+Schema tab:
+
+SELECT ?s ?p ?o WHERE { 
+		?s ?p ?o .  
+		FILTER (isURI(?s))
+		FILTER (isURI(?o))
+
+}
+
+remove dups and filter rdf:type
+
+
+
+USE 4store + config data store
+
+new All tab:
+	fix load All
+	query over all data sources
+	export NT dump of all
+	export VoID description of all
+	
+Query tab:
+	show exec time of query 
+	example queries/query repository
+	
+Status tab:
+	show diffs (http://code.google.com/p/rdflib/source/browse/trunk/rdflib/compare.py)
+	add Atom feed of syncs + history of last 5
+	
+===	
+
+data-gov.ie review:
+
++ use Fuseki
++ JS-deployment (check file:// with XDR)
++ assume Web server
++ store in the cloud
+
++ missing features:
+ + list named graphs
+ + explore by example (DESCRIBE)
+ + upload this RDF file (optional: into a NG)
+ + show add/remove history
+ + support for CONSTRUCT and insert into a NG see http://www.w3.org/2009/sparql/docs/update-1.1/Overview.xml#insert
+ + bookmarked SPARQL query
+
++ assumption:
+ + NG support
+ + SPARQL update support
+
+
+
+
+===
+OLD
+===
+
+var pcounter = 0;
+
+for(var r in data) {
+	$("#ds-entity-selection").append("<div class='ds-entity-sample' id='ds-entity-selection-" +  pcounter + "' />");
+	pcounter = pcounter + 1;
+}
+$("#ds-entity-selection").html("<div id='ds-entity-selection-control'><span id='ds-entity-next-prop'><img src='img/prev.png' alt='-' title='prev' /></span> <span>0</span> / " +  pcounter + "</span><span id='ds-entity-next-prop'><img src='img/next.png' alt='+' title='next' /></span></div>");
+done();
+
+pcounter = 0;
+for(var r in data) {
+	var row = data[r];
+	var paper = Raphael("ds-entity-selection-" + pcounter, 600, 400);
+	var scircle = paper.circle(100, 100, 20);
+	var ocircle = paper.circle(300, 100, 20);
+
+	scircle.attr("fill", "#e0e0e0");
+	scircle.attr("stroke", "#22e");
+	ocircle.attr("fill", "#e0e0e0");
+	ocircle.attr("stroke", "#22e");
+	paper.text(100, 130, turi);
+
+	paper.path("M120 100L280 100");
+	paper.path("M280 100L275 95");
+	paper.path("M275 95L275 105");
+	paper.path("M275 105L280 100");
+	
+	for(var c in row) {
+		paper.text(200, 60, c);
+		paper.text(300, 130, row[c]);
+	}
+	pcounter = pcounter + 1;
+}
+$("#ds-entity-selection-0").show();
